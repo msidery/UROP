@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Cordova</title>
+<script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+	var db;
+
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(populateDB, errorCB, successCB);
+    }
+
+    // Populate the database 
+    //
+    function populateDB(tx) {
+         tx.executeSql('DROP TABLE IF EXISTS DEMO');
+         tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
+         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
+         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
+    }
+
+    // Transaction error callback
+    //
+    function errorCB(tx, err) {
+        alert("Error processing SQL: "+err);
+    }
+
+    // Transaction success callback
+    //
+    function successCB() {
+        alert("success!");
+    }
+    
+    function go() {
+        db.transaction(addDB, errorCB, successCB);
+    }
+    
+    function addDB(tx) {
+    	var f = document.getElementById("fname").value;
+    	var l = document.getElementById("lname").value;
+    	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
+    }
+    
+    function readDB() {
+    	db.transaction(queryDB, errorCBB);
+    }
+    
+    function queryDB(tx) {
+    	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
+	}
+	
+	function querySuccess(tx, results) {
+		var text = document.getElementById("text");
+		text.value = "RESULTS\n"
+		text.value += "Returned rows = " + results.rows.length + "\n";
+		for (i=0;i<results.rows.length;i++)
+			text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
+		// this will be true since it was a select statement and so rowsAffected was 0
+		// if (!resultSet.rowsAffected) {
+		  // console.log('No rows affected!');
+		  // return false;
+		// }
+		// for an insert statement, this property will return the ID of the last inserted row
+		//console.log("Last inserted row ID = " + results.insertId);
+	}
+	
+	function errorCBB(err) {
+	    alert("Error processing SQL: "+err.code);
+	}
+    
+    function cnvs_getCoordinates(event) {
+    	var x = event.clientX;
+    	var y = event.clientY;
+    	document.getElementById("coordiv").innerHTML = "Coordinates: ("+x+", "+y+")";
+    	document.getElementById("coordiv2").style.display = "inline";
+    }
+    
+    function cnvs_showText(event) {
+    	document.getElementById("coordiv").style.display = "none";
+    	document.getElementById("coordiv2").style.display = "none";
+    	document.getElementById("fname").style.display = "inline";
+    	document.getElementById("lname").style.display = "inline";
+    	document.getElementById("add").style.display = "inline";
+    	document.getElementById("read").style.display = "inline";
+    	document.getElementById("text").style.display = "inline";
+    }
+    
+</script>
+</script>
+</head>
+<body>
+	<!-- <div id="coordiv" style="position:absolute;width:199px;height:99px;border:1px solid #c3c3c3;background:red;display:inline" onclick="cnvs_getCoordinates(event)">TEST BOX</div>-->
+	<div id="coordiv2" style="position:absolute;top:100px;width:199px;height:99px;border:1px solid #c3c3c3;background:blue;display:none" onclick="cnvs_showText(event)">SECOND</div>
+<canvas id="coordiv" width="200" height="100" style="border:1px solid #c3c3c3;" onclick="cnvs_getCoordinates(event)">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+var c=document.getElementById("coordiv");
+var ctx=c.getContext("2d");
+var img=new Image();
+img.onload = function(){
+ctx.drawImage(img,0,0);
+};
+img.src="back.png";
+</script>
+
+<textarea id="fname" rows="1" cols="30" style="display:none" >3</textarea><br />
+<textarea id="lname" rows="1" cols="30" style="display:none" >Third row</textarea><br />
+<input id="add" type="button" onclick="go()" style="display:none" value="Add" />
+<input id="read" type="button" onclick="readDB()" style="display:none" value="Read" /><br />
+<textarea id="text" rows="8" cols="30" style="display:none" >DB</textarea><br />
+</body>
+</html>
