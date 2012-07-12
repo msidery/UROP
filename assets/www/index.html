@@ -27,19 +27,25 @@
 		var level = 1;
 		var next = 1;
 		var tabdiv = document.getElementById("tabs");
-		while (next == 1) {
+		while (true) {
 			var value = localStore.getItem(level + "." + next);
 			if (value == null)
 				break;
 			var elem = document.createElement('canvas');
 			elem.id = "canvas" + level + "." + next;
 			elem.onclick = function () {cnvs_getCoordinates(event)};
-			// elem.innerWidth = "100px";
-			// elem.style.height = "100px";
-			elem.style.position = "absolute";
+			elem.style.margin = "0px";
+			elem.style.width = (width/3-2)+"px";
+			elem.style.height = "100px";
+			// elem.style.position = "absolute";
+			// elem.left = (next-1)*width/3;
 			
 			elem.style.border = "1px solid #c3c3c3";
 			elem.appendChild(document.createTextNode("Your browser does not support the canvas element."));
+			
+			var ctx=elem.getContext("2d");
+			ctx.font = "bold 12px sans-serif";
+			ctx.fillText(level + "." + next, 50, 50);
 			
 			tabdiv.appendChild(elem);
 			next = next + 1;
@@ -140,8 +146,8 @@
 </script>
 </script>
 </head>
-<body>
-<div id="tabs"></div>
+<body style="margin:0px;padding:0px;">
+<div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
 <canvas id="coordiv" width="200" height="100" style="border:1px solid #c3c3c3;" onclick="cnvs_getCoordinates(event)">
 Your browser does not support the canvas element.
 </canvas>
