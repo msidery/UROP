@@ -29,18 +29,27 @@
 		var tabdiv = document.getElementById("tabs");
 		while (true) {
 			var value = localStore.getItem(level + "." + next);
-			if (value == null)
-				break;
+			if (value == null) {
+				level = level + 1;
+				next = 1;
+				value = localStore.getItem(level + "." + next);
+				if (value == null)
+					break;
+			}
 			var elem = document.createElement('canvas');
 			elem.id = "canvas" + level + "." + next;
-			elem.onclick = function () {cnvs_getCoordinates(event)};
+			var templev = level;
+			elem.onclick = function () {cnvs_getCoordinates(event, templev, next)};
 			elem.style.margin = "0px";
 			elem.style.width = (width/3-2)+"px";
 			elem.style.height = "100px";
 			// elem.style.position = "absolute";
-			// elem.left = (next-1)*width/3;
+			// elem.left = (next-1)*width/3+"px";
 			
 			elem.style.border = "1px solid #c3c3c3";
+			
+			if (level > 1)
+				elem.style.display = "none";
 			elem.appendChild(document.createTextNode("Your browser does not support the canvas element."));
 			
 			var ctx=elem.getContext("2d");
@@ -118,19 +127,30 @@
 	    alert("Error processing SQL: "+err.code);
 	}
     
-    function cnvs_getCoordinates(event) {
+    function cnvs_getCoordinates(event, level, next) {
     	var x = event.clientX;
     	var y = event.clientY;
-    	document.getElementById("coordiv").innerHTML = "Coordinates: ("+x+", "+y+")";
-    	document.getElementById("coordiv2").style.display = "inline";
-		document.getElementById("coordiv").style.width = "100px";
 		
-		var c=document.getElementById("canvas1.1");
-		var ctx=c.getContext("2d");
-		ctx.moveTo(10,10);
-		ctx.lineTo(x,y);
-		ctx.lineTo(10,50);
-		ctx.stroke();
+		// var c=document.getElementById("canvas1.1");
+		// var ctx=c.getContext("2d");
+		// ctx.moveTo(10,10);
+		// ctx.lineTo(x,y);
+		// ctx.lineTo(10,50);
+		// ctx.stroke();
+		if (typeof level != "undefined"){
+			if (level == 2) {
+				document.getElementById("canvas2.1").style.display = "inline";
+    			document.getElementById("canvas2.2").style.display = "inline";
+    		}
+			else {
+				document.getElementById("tabs").innerHTML = level;
+    		}
+		}
+    	else {
+	    	document.getElementById("coordiv").innerHTML = "Coordinates: ("+x+", "+y+")";
+	    	document.getElementById("coordiv2").style.display = "inline";
+			document.getElementById("coordiv").style.width = "100px";
+    	}
     }
     
     function cnvs_showText(event) {
@@ -144,7 +164,12 @@
     }
     
 </script>
-</script>
+<script type="text/javascript" src="jquery.js"></script>
+
+<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+<script src="jquery-1.7.2.min.js"></script>
+<script src="jquery.mobile-1.1.0.min.js"></script>
+
 </head>
 <body style="margin:0px;padding:0px;">
 <div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
@@ -155,6 +180,7 @@ Your browser does not support the canvas element.
 var c=document.getElementById("coordiv");
 var ctx=c.getContext("2d");
 var img=new Image();
+
 img.onload = function(){
 ctx.drawImage(img,0,0);
 };
@@ -170,11 +196,21 @@ Your browser does not support the canvas element.
 <input id="add" type="button" onclick="go()" style="display:none" value="Add" />
 <input id="read" type="button" onclick="readDB()" style="display:none" value="Read" /><br />
 <textarea id="text" rows="8" cols="30" style="display:none" >DB</textarea><br />
-	
+
+<!--	
 <form method="post" action="http://localhost/phonegap/test.php" id="infoForm">
     <input type="text" name="first_name" id="first_name" value="" placeholder="First Name"  />
     <input type="text" name="last_name" id="last_name" value="" placeholder="Last Name"  />
     <button type="submit">Submit</button>
 </form>
+-->
+
+<script>
+$(document).ready(function(){
+	$("#canvas1.1").bind("tap", function() {
+		alert("READY");
+	});
+});
+</script>
 </body>
 </html>
