@@ -1,3 +1,217 @@
+<!--<!DOCTYPE HTML>
+<html>
+<head>
+<title>Cordova</title>
+<script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
+<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+<script src="jquery-1.7.2.min.js"></script>
+<script src="jquery.mobile-1.1.0.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+	var db;
+	var localStore;
+	var categories = new Array();
+	var ctx;
+	var TAB_SIZE = 100;
+	var selection = new Array();
+	var backButtonX, backButtonY;
+
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+	function init() {
+		var canvas = document.getElementById("canv");
+		ctx = canvas.getContext("2d");
+		localStore = window.localStorage;
+		localStore.clear();
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		canvas.innerWidth = width;
+		canvas.innerHeight = height;
+		backButtonX = width - 50;
+		backButtonY = height - 50;
+		if (localStore.key(0) == null) {
+			localStore.setItem("0.0", "00");
+			localStore.setItem("0.1", "01");
+			localStore.setItem("0.2", "02");
+			localStore.setItem("1.0", "10");
+			localStore.setItem("1.1", "11");
+		}
+		var level = 0;
+		var next = 0;
+		while (true) {
+			var value = localStore.getItem(level + "." + next);
+			if (value == null) {
+				level = level + 1;
+				next = 0;
+				value = localStore.getItem(level + "." + next);
+				if (value == null)
+					break;
+			}
+			if (level >= categories.length)
+				categories[level] = new Array();
+			categories[level][next] = value;
+			
+			next = next + 1;
+		}
+		
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillRect(0,0,width,height);
+		
+		ctx.font = "bold 12px sans-serif";
+		for (var j = 0; j < categories[0].length; j++) {
+			ctx.fillStyle = "#DDDDDD";
+			ctx.fillRect(j*TAB_SIZE,0,TAB_SIZE,TAB_SIZE);
+			ctx.strokeStyle = "#000000";
+			ctx.lineWidth = 2;
+			ctx.strokeRect(j*TAB_SIZE,0,TAB_SIZE,TAB_SIZE);
+			ctx.fillStyle = "#000000";
+			ctx.fillText(0 + "." + j, j*TAB_SIZE+TAB_SIZE/2,
+				TAB_SIZE-TAB_SIZE/2);
+		}
+		
+		ctx.fillStyle = "#DDDDDD";
+		ctx.fillRect(backButtonX,backButtonY,TAB_SIZE,TAB_SIZE);
+		
+		// var grd=ctx.createLinearGradient(0,0,175,TAB_SIZE);
+		// grd.addColorStop(0,"#FF0000");
+		// grd.addColorStop(1,"#00FF00");
+		// ctx.fillStyle=grd;
+		// ctx.fillRect(0,0,175,TAB_SIZE);
+// 		
+		// ctx.fillStyle = randCol();
+		// ctx.fillRect(10,10,100,100);
+		// ctx.strokeStyle = "#00FFFF";
+		// ctx.lineWidth = 5;
+		// ctx.strokeRect(10,10,100,100);
+		
+	}
+	
+	function randCol() {
+		var col = "#";
+		var digits = "0123456789ABCDEF".split('');
+		for (var m = 0; m < 6; m++) {
+			col += digits[Math.round(Math.random()*15)];
+		}
+		return col;
+	}
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(populateDB, errorCB, successCB);
+        init();
+    }
+
+    // Populate the database 
+    //
+    function populateDB(tx) {
+         tx.executeSql('DROP TABLE IF EXISTS DEMO');
+         tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
+         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
+         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
+    }
+
+    // Transaction error callback
+    //
+    function errorCB(tx, err) {
+        alert("Error processing SQL: "+err);
+    }
+
+    // Transaction success callback
+    //
+    function successCB() {
+        //alert("success!");
+    }
+    
+    function go() {
+        db.transaction(addDB, errorCB, successCB);
+    }
+    
+    function addDB(tx) {
+    	var f = document.getElementById("fname").value;
+    	var l = document.getElementById("lname").value;
+    	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
+    }
+    
+    function readDB() {
+    	db.transaction(queryDB, errorCBB);
+    }
+    
+    function queryDB(tx) {
+    	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
+	}
+	
+	function querySuccess(tx, results) {
+		var text = document.getElementById("text");
+		text.value = "RESULTS\n"
+		text.value += "Returned rows = " + results.rows.length + "\n";
+		for (var i = 0; i < results.rows.length; i++)
+			text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
+		// this will be true since it was a select statement and so rowsAffected was 0
+		// if (!resultSet.rowsAffected) {
+		  // console.log('No rows affected!');
+		  // return false;
+		// }
+		// for an insert statement, this property will return the ID of the last inserted row
+		//console.log("Last inserted row ID = " + results.insertId);
+	}
+	
+	function errorCBB(err) {
+	    alert("Error processing SQL: "+err.code);
+	}
+    
+    function cnvs_getCoordinates(event) {
+    	var x = event.clientX;
+    	var y = event.clientY;
+		
+		// ctx.moveTo(10,10);
+		// ctx.lineTo(x,y);
+		// ctx.lineTo(10,TAB_SIZE);
+		// ctx.stroke();
+		var xBlock = Math.floor(x/TAB_SIZE);
+		var yBlock = Math.floor(y/TAB_SIZE);
+		if (yBlock <= selection.length) {
+			if (yBlock == selection.length)
+				selection.push(xBlock+1);
+			for (var j = 0; j < categories[selection[0]].length; j++) {
+				ctx.fillStyle = "#DDDDDD";
+				ctx.fillRect(j*TAB_SIZE,TAB_SIZE,TAB_SIZE,TAB_SIZE);
+				ctx.strokeStyle = "#000000";
+				ctx.lineWidth = 2;
+				ctx.strokeRect(j*TAB_SIZE,TAB_SIZE,TAB_SIZE,TAB_SIZE);
+				ctx.fillStyle = "#000000";
+				ctx.fillText(1 + "." + j, j*TAB_SIZE+TAB_SIZE/2,
+					2*TAB_SIZE-TAB_SIZE/2);
+			}
+		}
+		if (selection.length > 0 && x > backButtonX && y > backButtonY) {
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillRect(0, selection.length*TAB_SIZE+1, document.getElementById("canv").innerHeight, TAB_SIZE+1);
+			selection.pop();
+		}
+    }
+    
+    function cnvs_showText(event) {
+    	var canv = document.getElementById("coordiv");
+    	var ctx = canv.getContext("2d");
+    }
+    
+</script>
+
+</head>
+<body style="margin:0px;padding:0px;">
+<canvas id="canv" width="400px%" height="800px" style="border:1px solid #c3c3c3;" onclick="cnvs_getCoordinates(event)">
+Your browser does not support the canvas element.
+</canvas>
+
+</body>
+</html>
+-->
+
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -7,6 +221,8 @@
 
 	var db;
 	var localStore;
+	var categories = new Array();
+	var selection = new Array();
 
     // Wait for Cordova to load
     //
@@ -24,41 +240,41 @@
 			localStore.setItem("2.1", "21");
 			localStore.setItem("2.2", "22");
 		}
-		var level = 1;
-		var next = 1;
-		var tabdiv = document.getElementById("tabs");
-		while (true) {
-			var value = localStore.getItem(level + "." + next);
-			if (value == null) {
-				level = level + 1;
-				next = 1;
-				value = localStore.getItem(level + "." + next);
-				if (value == null)
-					break;
-			}
-			var elem = document.createElement('canvas');
-			elem.id = "canvas" + level + "." + next;
-			var templev = level;
-			elem.onclick = function () {cnvs_getCoordinates(event, templev, next)};
-			elem.style.margin = "0px";
-			elem.style.width = (width/3-2)+"px";
-			elem.style.height = "100px";
-			// elem.style.position = "absolute";
-			// elem.left = (next-1)*width/3+"px";
-			
-			elem.style.border = "1px solid #c3c3c3";
-			
-			if (level > 1)
-				elem.style.display = "none";
-			elem.appendChild(document.createTextNode("Your browser does not support the canvas element."));
-			
-			var ctx=elem.getContext("2d");
-			ctx.font = "bold 12px sans-serif";
-			ctx.fillText(level + "." + next, 50, 50);
-			
-			tabdiv.appendChild(elem);
-			next = next + 1;
-		}
+		// var level = 1;
+		// var next = 1;
+		// var tabdiv = document.getElementById("tabs");
+		// while (true) {
+			// var value = localStore.getItem(level + "." + next);
+			// if (value == null) {
+				// level = level + 1;
+				// next = 1;
+				// value = localStore.getItem(level + "." + next);
+				// if (value == null)
+					// break;
+			// }
+			// var elem = document.createElement('canvas');
+			// elem.id = "canvas" + level + "." + next;
+			// var templev = level;
+			// elem.onclick = function () {cnvs_getCoordinates(event, templev, next)};
+			// elem.style.margin = "0px";
+			// elem.style.width = (width/3-2)+"px";
+			// elem.style.height = "100px";
+			// // elem.style.position = "absolute";
+			// // elem.left = (next-1)*width/3+"px";
+// 			
+			// elem.style.border = "1px solid #c3c3c3";
+// 			
+			// if (level > 1)
+				// elem.style.display = "none";
+			// elem.appendChild(document.createTextNode("Your browser does not support the canvas element."));
+// 			
+			// var ctx=elem.getContext("2d");
+			// ctx.font = "bold 12px sans-serif";
+			// ctx.fillText(level + "." + next, 50, 50);
+// 			
+			// tabdiv.appendChild(elem);
+			// next = next + 1;
+		// }
 	}
 
     // Cordova is ready
@@ -171,45 +387,58 @@
 <script src="jquery.mobile-1.1.0.min.js"></script>
 
 </head>
-<body style="margin:0px;padding:0px;">
-<div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
-<canvas id="coordiv" width="200" height="100" style="border:1px solid #c3c3c3;" onclick="cnvs_getCoordinates(event)">
-Your browser does not support the canvas element.
-</canvas>
-<script type="text/javascript">
-var c=document.getElementById("coordiv");
-var ctx=c.getContext("2d");
-var img=new Image();
+<body style="margin:0px;padding:0px;background:white;">
 
-img.onload = function(){
-ctx.drawImage(img,0,0);
-};
-img.src="back.png";
-</script>
-<canvas id="coordiv2" width="200" height="100" top="100" style="position:absolute;border:1px solid #c3c3c3;background:blue;display:none;" onclick="cnvs_showText(event)">
-Your browser does not support the canvas element.
-</canvas>
-<!-- <div id="coordiv2" style="position:absolute;top:100px;width:199px;height:99px;border:1px solid #c3c3c3;background:blue;display:none" onclick="cnvs_showText(event)">SECOND</div> -->
+<div id="0" data-role="controlgroup" data-type="horizontal" >
+	<a class="list opt" data-role="button" >1</a>
+	<a class="list opt" data-role="button" >2</a>
+	<a class="list opt" data-role="button" >3</a>
+	<a class="list opt" data-role="button" >4</a>
+</div>
+<div id="1" data-role="controlgroup" data-type="horizontal" >
+	<a class="list opt" data-role="button">A</a>
+	<a class="list opt" data-role="button">B</a>
+	<a class="list opt" data-role="button">C</a>
+	<a class="list up" data-role="button" data-icon="arrow-u" >Up</a>
+</div>
+<div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
 
 <textarea id="fname" rows="1" cols="30" style="display:none" >3</textarea><br />
 <textarea id="lname" rows="1" cols="30" style="display:none" >Third row</textarea><br />
-<input id="add" type="button" onclick="go()" style="display:none" value="Add" />
-<input id="read" type="button" onclick="readDB()" style="display:none" value="Read" /><br />
+<input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
+<input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
 <textarea id="text" rows="8" cols="30" style="display:none" >DB</textarea><br />
 
-<!--	
-<form method="post" action="http://localhost/phonegap/test.php" id="infoForm">
-    <input type="text" name="first_name" id="first_name" value="" placeholder="First Name"  />
-    <input type="text" name="last_name" id="last_name" value="" placeholder="Last Name"  />
-    <button type="submit">Submit</button>
-</form>
--->
-
+<button id="back" data-inline="true" >Up</button>
 <script>
 $(document).ready(function(){
-	$("#canvas1.1").bind("tap", function() {
-		alert("READY");
+	$('#coordiv2').bind("tap", function() {
+		// alert("READY");
 	});
+	
+	$('.up').bind("click", function() {
+		$(this).parent().css('display', 'none');
+	});
+	
+	$('#0 .opt').bind('click', function() {
+		$('#1').css('display', 'inline');
+	});
+	
+	$('#1 .opt').bind('click', function() {
+		$('#fname').css('display', 'inline');
+		$('#lname').css('display', 'inline');
+		$('#add').css('display', 'inline');
+		$('#read').css('display', 'inline');
+		$('#text').css('display', 'inline');
+	});
+	
+	$('.list').css('width', window.innerWidth/4-1+'px');
+	$('#1').css("display", "none");
+	$('#fname').css('display', 'none');
+	$('#lname').css('display', 'none');
+	$('#add').css('display', 'none');
+	$('#read').css('display', 'none');
+	$('#text').css('display', 'none');
 });
 </script>
 </body>
