@@ -403,13 +403,15 @@ Your browser does not support the canvas element.
 </div>
 <div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
 
-<textarea id="fname" rows="1" cols="30" style="display:none" >3</textarea><br />
-<textarea id="lname" rows="1" cols="30" style="display:none" >Third row</textarea><br />
+<div id="forms" >
+<textarea id="fname" rows="1" cols="30" >3</textarea><br />
+<textarea id="lname" rows="1" cols="30" >Third row</textarea><br />
 <input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
 <input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
-<textarea id="text" rows="8" cols="30" style="display:none" >DB</textarea><br />
+<textarea id="text" rows="8" cols="30" >DB</textarea><br />
+<button id="done" data-inline="true" >Done</button>
+</div>
 
-<button id="back" data-inline="true" >Up</button>
 <script>
 $(document).ready(function(){
 	$('#coordiv2').bind("tap", function() {
@@ -425,20 +427,17 @@ $(document).ready(function(){
 	});
 	
 	$('#1 .opt').bind('click', function() {
-		$('#fname').css('display', 'inline');
-		$('#lname').css('display', 'inline');
-		$('#add').css('display', 'inline');
-		$('#read').css('display', 'inline');
-		$('#text').css('display', 'inline');
+		$('#forms').css('display', 'inline');
+	});
+	
+	$('#done').bind('click', function() {
+		$('#1').css('display', 'none');
+		$('#forms').css('display', 'none');
 	});
 	
 	$('.list').css('width', window.innerWidth/4-1+'px');
 	$('#1').css("display", "none");
-	$('#fname').css('display', 'none');
-	$('#lname').css('display', 'none');
-	$('#add').css('display', 'none');
-	$('#read').css('display', 'none');
-	$('#text').css('display', 'none');
+	$('#forms').css('display', 'none');
 });
 </script>
 </body>
