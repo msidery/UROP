@@ -3,29 +3,86 @@
 <head>
 <title>Cordova</title>
 <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="database.js"></script>
+<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+<script src="jquery-1.7.2.min.js"></script>
+<script src="jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 
-	var db;
-	var localStore;
-	var categories = new Array();
-	var selection = new Array();
+	// var localStore;
+	// var categories = new Array();
+	// var selection = new Array();
 
     // Wait for Cordova to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
 
-	function init() {
-		localStore = window.localStorage;
-		var width = window.innerWidth;
-		document.getElementById("coordiv").style.width = (width/2)+"px";
-		document.getElementById("coordiv2").style.width = "100px";
-		if (localStore.key(0) == null) {
-			localStore.setItem("1.1", "11");
-			localStore.setItem("1.2", "12");
-			localStore.setItem("1.3", "13");
-			localStore.setItem("2.1", "21");
-			localStore.setItem("2.2", "22");
-		}
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+    	//initDB();
+        init();
+    }
+    
+    function init() {
+		$('#forms').css('display', 'none');
+		
+		var buttons0 = '<div data-role="controlgroup" data-type="horizontal">';
+		buttons0 += '<a class="opt" data-role="button">1</a>';
+		buttons0 += '<a class="opt" data-role="button">2</a>';
+		buttons0 += '</div>';
+		$('#tabs0').html(buttons0).trigger('create');
+		var buttons1 = '<div data-role="controlgroup" data-type="horizontal">';
+		buttons1 += '<a class="opt" data-role="button">A</a>';
+		buttons1 += '<a class="opt" data-role="button">B</a>';
+		buttons1 += '<a class="opt" data-role="button">C</a>';
+		buttons1 += '<a class="opt" data-role="button">D</a>';
+		buttons1 += '</div>';
+		$('#tabs1').html(buttons1).trigger('create');
+		var buttons2 = '<div data-role="controlgroup" data-type="horizontal">';
+		buttons2 += '<a class="opt" data-role="button">a</a>';
+		buttons2 += '<a class="opt" data-role="button">b</a>';
+		buttons2 += '<a class="opt" data-role="button">c</a>';
+		buttons2 += '<a class="opt" data-role="button">d</a>';
+		buttons2 += '</div>';
+		$('#tabs2').html(buttons2).trigger('create');
+		
+		$('.opt').css('width', window.innerWidth/4-1+'px');
+		
+		$('#tabs0 .opt').bind('click', function() {
+			$('#tabs1').css('display', 'block');
+			$('#tabs2').css('display', 'none');
+			$('#forms').css('display', 'none');
+		});
+		
+		$('#tabs1 .opt').bind('click', function() {
+			$('#tabs2').css('display', 'block');
+			$('#forms').css('display', 'none');
+		});
+		
+		$('#tabs2 .opt').bind('click', function() {
+			$('#forms').css('display', 'inline');
+		});
+		
+		$('#done').bind('click', function() {
+			$('#forms').css('display', 'none');
+		});
+		
+		$('#cancel').bind('click', function() {
+			$('#forms').css('display', 'none');
+		});
+    }
+    
+	// function init() {
+		// localStore = window.localStorage;
+		// var width = window.innerWidth;
+		// if (localStore.key(0) == null) {
+			// localStore.setItem("1.1", "11");
+			// localStore.setItem("1.2", "12");
+			// localStore.setItem("1.3", "13");
+			// localStore.setItem("2.1", "21");
+			// localStore.setItem("2.2", "22");
+		// }
 		// var level = 1;
 		// var next = 1;
 		// var tabdiv = document.getElementById("tabs");
@@ -61,133 +118,15 @@
 			// tabdiv.appendChild(elem);
 			// next = next + 1;
 		// }
-	}
-
-    // Cordova is ready
-    //
-    function onDeviceReady() {
-        db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-        db.transaction(populateDB, errorCB, successCB);
-        init();
-    }
-
-    // Populate the database 
-    //
-    function populateDB(tx) {
-         tx.executeSql('DROP TABLE IF EXISTS DEMO');
-         tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
-         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
-         tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
-    }
-
-    // Transaction error callback
-    //
-    function errorCB(tx, err) {
-        alert("Error processing SQL: "+err);
-    }
-
-    // Transaction success callback
-    //
-    function successCB() {
-        //alert("success!");
-    }
-    
-    function go() {
-        db.transaction(addDB, errorCB, successCB);
-    }
-    
-    function addDB(tx) {
-    	var f = document.getElementById("fname").value;
-    	var l = document.getElementById("lname").value;
-    	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
-    }
-    
-    function readDB() {
-    	db.transaction(queryDB, errorCBB);
-    }
-    
-    function queryDB(tx) {
-    	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
-	}
-	
-	function querySuccess(tx, results) {
-		var text = document.getElementById("text");
-		text.value = "RESULTS\n"
-		text.value += "Returned rows = " + results.rows.length + "\n";
-		for (i=0;i<results.rows.length;i++)
-			text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
-		// this will be true since it was a select statement and so rowsAffected was 0
-		// if (!resultSet.rowsAffected) {
-		  // console.log('No rows affected!');
-		  // return false;
-		// }
-		// for an insert statement, this property will return the ID of the last inserted row
-		//console.log("Last inserted row ID = " + results.insertId);
-	}
-	
-	function errorCBB(err) {
-	    alert("Error processing SQL: "+err.code);
-	}
-    
-    function cnvs_getCoordinates(event, level, next) {
-    	var x = event.clientX;
-    	var y = event.clientY;
-		
-		// var c=document.getElementById("canvas1.1");
-		// var ctx=c.getContext("2d");
-		// ctx.moveTo(10,10);
-		// ctx.lineTo(x,y);
-		// ctx.lineTo(10,50);
-		// ctx.stroke();
-		if (typeof level != "undefined"){
-			if (level == 2) {
-				document.getElementById("canvas2.1").style.display = "inline";
-    			document.getElementById("canvas2.2").style.display = "inline";
-    		}
-			else {
-				document.getElementById("tabs").innerHTML = level;
-    		}
-		}
-    	else {
-	    	document.getElementById("coordiv").innerHTML = "Coordinates: ("+x+", "+y+")";
-	    	document.getElementById("coordiv2").style.display = "inline";
-			document.getElementById("coordiv").style.width = "100px";
-    	}
-    }
-    
-    function cnvs_showText(event) {
-    	document.getElementById("coordiv").style.display = "none";
-    	document.getElementById("coordiv2").style.display = "none";
-    	document.getElementById("fname").style.display = "inline";
-    	document.getElementById("lname").style.display = "inline";
-    	document.getElementById("add").style.display = "inline";
-    	document.getElementById("read").style.display = "inline";
-    	document.getElementById("text").style.display = "inline";
-    }
-    
+	// }
 </script>
-<script type="text/javascript" src="jquery.js"></script>
-
-<link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
-<script src="jquery-1.7.2.min.js"></script>
-<script src="jquery.mobile-1.1.0.min.js"></script>
 
 </head>
 <body style="margin:0px;padding:0px;background:white;">
 
-<div id="0" data-role="controlgroup" data-type="horizontal" >
-	<a class="list opt" data-role="button" >1</a>
-	<a class="list opt" data-role="button" >2</a>
-	<a class="list opt" data-role="button" >3</a>
-	<a class="list opt" data-role="button" >4</a>
-</div>
-<div id="1" data-role="controlgroup" data-type="horizontal" >
-	<a class="list opt" data-role="button">A</a>
-	<a class="list opt" data-role="button">B</a>
-	<a class="list opt" data-role="button">C</a>
-	<a class="list up" data-role="button" data-icon="arrow-u" >Up</a>
-</div>
-<div id="tabs" style="margin:0px;padding:0px;left:0px"></div>
+<div id="tabs0"></div>
+<div id="tabs1"></div>
+<div id="tabs2"></div>
 
 <div id="forms" >
 <textarea id="fname" rows="1" cols="30" >3</textarea><br />
@@ -196,35 +135,7 @@
 <input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
 <textarea id="text" rows="8" cols="30" >DB</textarea><br />
 <button id="done" data-inline="true" >Done</button>
+<button id="cancel" data-inline="true" >Cancel</button>
 </div>
-
-<script>
-$(document).ready(function(){
-	$('#coordiv2').bind("tap", function() {
-		// alert("READY");
-	});
-	
-	$('.up').bind("click", function() {
-		$(this).parent().css('display', 'none');
-	});
-	
-	$('#0 .opt').bind('click', function() {
-		$('#1').css('display', 'inline');
-	});
-	
-	$('#1 .opt').bind('click', function() {
-		$('#forms').css('display', 'inline');
-	});
-	
-	$('#done').bind('click', function() {
-		$('#1').css('display', 'none');
-		$('#forms').css('display', 'none');
-	});
-	
-	$('.list').css('width', window.innerWidth/4-1+'px');
-	$('#1').css("display", "none");
-	$('#forms').css('display', 'none');
-});
-</script>
 </body>
 </html>
