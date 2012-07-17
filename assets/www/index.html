@@ -17,37 +17,22 @@
     //
     function onDeviceReady() {
     // window.onload = function() {
-    	initDB();
-        init();
-    }
-    
-    function init() {
-		$('#forms').css('display', 'none');
-		
-		addAllTabs();
-		
-		$('#done').bind('click', function() {
-			$('#forms').css('display', 'none');
-		});
-		
-		$('#cancel').bind('click', function() {
-			$('#forms').css('display', 'none');
-		});
+    	init();
     }
 </script>
 
 </head>
-<body style="margin:0px;padding:0px;background:white;">
+<body style="margin:0px;padding:0px;background:#FFFFFF;">
 
 <div id="tabs0"></div>
 <div id="tabs1"></div>
 <div id="tabs2"></div>
 
 <div id="forms" >
-<textarea id="fname" rows="1" cols="30" >3</textarea><br />
-<textarea id="lname" rows="1" cols="30" >Third row</textarea><br />
-<input id="add" data-inline="true" type="button" value="Add" />
-<input id="read" data-inline="true" type="button" value="Read" /><br />
+<textarea id="fname" rows="1" cols="30" >3</textarea>
+<textarea id="lname" rows="1" cols="30" >Third row</textarea>
+<input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
+<input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
 <textarea id="text" rows="8" cols="30" >DB</textarea><br />
 <button id="done" data-inline="true" >Done</button>
 <button id="cancel" data-inline="true" >Cancel</button>

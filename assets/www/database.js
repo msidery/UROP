@@ -1,9 +1,28 @@
 var db;
 
+function init() {
+	initDB();
+	initUI();
+}
+
 function initDB() {
     db = window.openDatabase("test", "1.0", "Test database", 100000);
     db.transaction(createTables, errorCB, successCB);
 	db.transaction(populateDB, errorCB, populateSuccess);
+}
+
+function initUI() {
+	$('#forms').css('display', 'none');
+	
+	addAllTabs();
+	
+	$('#done').bind('click', function() {
+		$('#forms').css('display', 'none');
+	});
+	
+	$('#cancel').bind('click', function() {
+		$('#forms').css('display', 'none');
+	});
 }
 
 // Populate the database 
@@ -15,6 +34,10 @@ function createTables(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs0 (level0, category)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs1 (level0, level1, category)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs2 (level0, level1, level2, category)');
+	tx.executeSql('DROP TABLE IF EXISTS Demo');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Demo (id unique, data)');
+	tx.executeSql('INSERT INTO Demo (id, data) VALUES (1, "First row")');
+	tx.executeSql('INSERT INTO Demo (id, data) VALUES (2, "Second row")');
 }
 
 function populateDB(tx) {
@@ -71,8 +94,7 @@ function addTabs(level, selection) {
 			var buttons = '<div id="subtabs';
 			for (var i = 0; i < selection.length; i++)
 				buttons += selection[i] + '-';
-			buttons += '">';
-			buttons += '<div data-role="controlgroup" data-type="horizontal">';
+			buttons += '" data-role="controlgroup" data-type="horizontal">';
 			for (var i = 0; i < results.rows.length; i++) {
 				if (level < 2) {
 					var next = [];
@@ -83,7 +105,7 @@ function addTabs(level, selection) {
 				}
 				buttons += '<a id="btn'+i+'" class="opt" data-role="button" data-theme="a">'+results.rows.item(i).category+'</a>';
 			}
-			buttons += '</div></div>';
+			buttons += '</div>';
 			$('#tabs'+level).append(buttons).trigger('create');
 			addBindings(level);
 		}
@@ -106,12 +128,12 @@ function addBindings(level) {
 		case 0: {
 			$('#tabs0 .opt').bind('click', function() {
 				hideTabs1();
-				$('#tabs1 #' + $(this).parent().parent().attr('id')
+				$('#tabs1 #' + $(this).parent().attr('id')
 					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
 				$('#tabs1').css('display', 'block');
 				$('#tabs2').css('display', 'none');
 				$('#forms').css('display', 'none');
-				$('#tabs0 .opt').removeClass('ui-btn-down-b');
+				$('#tabs0 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 				$(this).addClass('ui-btn-down-b');
 			});
 			break;
@@ -119,11 +141,11 @@ function addBindings(level) {
 		case 1: {
 			$('#tabs1 .opt').bind('click', function() {
 				hideTabs2();
-				$('#tabs2 #' + $(this).parent().parent().attr('id')
+				$('#tabs2 #' + $(this).parent().attr('id')
 					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
 				$('#tabs2').css('display', 'block');
 				$('#forms').css('display', 'none');
-				$('#tabs1 .opt').removeClass('ui-btn-down-b');
+				$('#tabs1 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 				$(this).addClass('ui-btn-down-b');
 			});
 			break;
@@ -131,7 +153,7 @@ function addBindings(level) {
 		case 2: {
 			$('#tabs2 .opt').bind('click', function() {
 				$('#forms').css('display', 'inline');
-				$('#tabs2 .opt').removeClass('ui-btn-down-b');
+				$('#tabs2 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 				$(this).addClass('ui-btn-down-b');
 			});
 			break;
@@ -142,7 +164,7 @@ function addBindings(level) {
 	$('#tabs2').css('display', 'none');
 	//alert('#tabs'+level+' #subtabs');
 	//if (level > 0)
-		//$('#tabs'+level+' #' + $(this).parent().parent().attr('id')).css('display', 'none');
+		//$('#tabs'+level+' #' + $(this).parent().attr('id')).css('display', 'none');
 		//$('#tabs'+level+' #subtabs').css('display', 'none');
 	$('#tabs'+level+' .opt').css('width', window.innerWidth/4-1+'px');
 }
@@ -163,35 +185,35 @@ function hideTabs2() {
 	$('#tabs2 #subtabs1-3-').css('display', 'none');
 }
 
-// function go() {
-    // //db.transaction(addDB, errorCB, successCB);
-// }
-// 
-// function addDB(tx) {
-	// var f = document.getElementById("fname").value;
-	// var l = document.getElementById("lname").value;
-	// tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
-// }
-// 
-// function readDB() {
-	// //db.transaction(queryDB, errorCBB);
-// }
-// 
-// function queryDB(tx) {
-	// //tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
-// }
-// 
-// function querySuccess(tx, results) {
-	// var text = document.getElementById("text");
-	// text.value = "RESULTS\n"
-	// text.value += "Returned rows = " + results.rows.length + "\n";
-	// for (var i = 0; i < results.rows.length; i++)
-		// text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
-	// // this will be true since it was a select statement and so rowsAffected was 0
-	// // if (!resultSet.rowsAffected) {
+function go() {
+    db.transaction(addDB, errorCB, successCB);
+}
+
+function addDB(tx) {
+	var f = document.getElementById("fname").value;
+	var l = document.getElementById("lname").value;
+	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
+}
+
+function readDB() {
+	db.transaction(queryDB, errorCBB);
+}
+
+function queryDB(tx) {
+	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
+}
+
+function querySuccess(tx, results) {
+	var text = document.getElementById("text");
+	text.value = "RESULTS\n"
+	text.value += "Returned rows = " + results.rows.length + "\n";
+	for (var i = 0; i < results.rows.length; i++)
+		text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
+	// this will be true since it was a select statement and so rowsAffected was 0
+	// if (!resultSet.rowsAffected) {
 	  // // console.log('No rows affected!');
 	  // // return false;
-	// // }
-	// // for an insert statement, this property will return the ID of the last inserted row
-	// //console.log("Last inserted row ID = " + results.insertId);
-// }
+	// }
+	// for an insert statement, this property will return the ID of the last inserted row
+	//console.log("Last inserted row ID = " + results.insertId);
+}
