@@ -126,14 +126,15 @@ function addTabs(level, selection) {
 function addBindings(level) {
 	if (level < 2) {
 		$('#tabs'+level+' .opt').bind('click', function() {
-			$('#tabs'+(level+1)).children().css('display', 'none');
-			$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
-				+ $(this).attr('id').substring(3)+'-').css('display', 'block');
 			$('#forms').css('display', 'none');
 			$('#tabs'+level+' #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 			$(this).addClass('ui-btn-down-b');
 			$(this).parent().css('display', 'block');
+			$('#tabs'+(level+1)).children().css('display', 'none');
+			$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
+				+ $(this).attr('id').substring(3)+'-').css('display', 'block');
 			$('#tabs'+(level+2)).children().css('display', 'none');
+			// show third level tabs corresponding to already highlighted second level tab
 			$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
 				+ $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
 				+'- .ui-btn-down-b').attr('id').substring(3)+'-').css('display', 'block');
