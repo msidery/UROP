@@ -1,4 +1,4 @@
-< ?xml version="1.0" encoding="UTF-8" ?>
+<TABS>
 	<LEVEL0>1
 	    <LEVEL1>A
 	        <LEVEL2>a</LEVEL2>
@@ -35,3 +35,4 @@
 	        <LEVEL2>p</LEVEL2>
 	    </LEVEL1>
 	</LEVEL0>
+</TABS>

@@ -22,7 +22,8 @@ function populateDB(tx) {
 }
 
 function populateSuccess(tx, results) {
-	/*if (window.XMLHttpRequest)
+	var xmlhttp;
+	if (window.XMLHttpRequest)
 		xmlhttp = new XMLHttpRequest();
 	else
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
@@ -32,45 +33,15 @@ function populateSuccess(tx, results) {
 
 	var x = xmlDoc.getElementsByTagName("LEVEL0");
 	for (var i = 0; i < x.length; i++) {
-		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i][0].childNodes[0].nodeValue+'")');
+		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i].childNodes[0].nodeValue+'")');
 		var y = x[i].getElementsByTagName("LEVEL1");
-		for (var j = 0; j < y.length; y++) {
-			tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j][0].childNodes[0].nodeValue+'")');
+		for (var j = 0; j < y.length; j++) {
+			tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j].childNodes[0].nodeValue+'")');
 			var z = y[j].getElementsByTagName("LEVEL2");
 			for (var k = 0; k < z.length; k++) {
-				tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k][0].childNodes[0].nodeValue+'")');
+				tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k].childNodes[0].nodeValue+'")');
 			}
 		}
-	}*/
-	
-	
-	if (results.rows.length == 0) {
-		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES (0, "1")');
-		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES (1, "2")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 0, "Cat1")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 1, "Cat2")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 2, "Cat3")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 3, "Cat4")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 0, "Cat5")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 1, "Cat6")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 2, "Cat7")');
-		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 3, "Cat8")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 0, 0, "1")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 0, 1, "2")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 1, 0, "3")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 1, 1, "4")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 2, 0, "5")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 2, 1, "6")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 3, 0, "7")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 3, 1, "8")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 0, 0, "9")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 0, 1, "10")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 1, 0, "11")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 1, 1, "12")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 2, 0, "13")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 2, 1, "14")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 3, 0, "15")');
-		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 3, 1, "16")');
 	}
 }
 
