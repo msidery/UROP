@@ -1,4 +1,5 @@
 var db;
+var width = window.innerWidth;
 
 function init() {
 	initDB();
@@ -8,7 +9,7 @@ function init() {
 function initDB() {
     db = window.openDatabase("test", "1.0", "Test database", 100000);
     db.transaction(createTables, errorCB, successCB);
-	db.transaction(populateDB, errorCB, populateSuccess);
+	db.transaction(populateDB, errorCB, successCB);
 }
 
 function initUI() {
@@ -130,14 +131,18 @@ function addBindings(level) {
 			$('#tabs'+level+' #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 			$(this).addClass('ui-btn-down-b');
 			$(this).parent().css('display', 'block');
-			$('#tabs'+(level+1)).children().css('display', 'none');
-			$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
-				+ $(this).attr('id').substring(3)+'-').css('display', 'block');
-			$('#tabs'+(level+2)).children().css('display', 'none');
-			// show third level tabs corresponding to already highlighted second level tab
-			$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
-				+ $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
-				+'- .ui-btn-down-b').attr('id').substring(3)+'-').css('display', 'block');
+			if (level < 2) {
+				$('#tabs'+(level+1)).children().css('display', 'none');
+				$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
+					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
+				if (level < 1) {
+					$('#tabs'+(level+2)).children().css('display', 'none');
+					// show third level tabs corresponding to already highlighted second level tab
+					$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
+						+ $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
+						+'- .ui-btn-down-b').attr('id').substring(3)+'-').css('display', 'block');
+				}
+			}
 		});
 	}
 	else {
@@ -150,7 +155,7 @@ function addBindings(level) {
 	
 	if (level > 0)
 		$('#tabs'+level).children().css('display', 'none');
-	$('#tabs'+level+' .opt').css('width', window.innerWidth/4-1+'px');
+	$('#tabs'+level+' .opt').css('width', width/4-1+'px');
 }
 
 function go() {
