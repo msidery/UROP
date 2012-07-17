@@ -124,40 +124,28 @@ function addTabs(level, selection) {
 }
 
 function addBindings(level) {
-	switch (level) {
-		case 0: {
-			$('#tabs0 .opt').bind('click', function() {
-				hideTabs1();
-				$('#tabs1 #' + $(this).parent().attr('id')
-					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
-				$('#tabs1').css('display', 'block');
-				$('#tabs2').css('display', 'none');
-				$('#forms').css('display', 'none');
-				$('#tabs0 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
-				$(this).addClass('ui-btn-down-b');
-			});
-			break;
-		}
-		case 1: {
-			$('#tabs1 .opt').bind('click', function() {
-				hideTabs2();
-				$('#tabs2 #' + $(this).parent().attr('id')
-					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
-				$('#tabs2').css('display', 'block');
-				$('#forms').css('display', 'none');
-				$('#tabs1 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
-				$(this).addClass('ui-btn-down-b');
-			});
-			break;
-		}
-		case 2: {
-			$('#tabs2 .opt').bind('click', function() {
-				$('#forms').css('display', 'inline');
-				$('#tabs2 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
-				$(this).addClass('ui-btn-down-b');
-			});
-			break;
-		}
+	if (level < 2) {
+		$('#tabs'+level+' .opt').bind('click', function() {
+			switch (level) {
+				case 0: { hideTabs1(); break; }
+				case 1: { hideTabs2(); break; }
+			}
+			$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
+				+ $(this).attr('id').substring(3)+'-').css('display', 'block');
+			$('#tabs'+(level+1)).css('display', 'block');
+			$('#tabs'+(level+2)).css('display', 'none');
+			$('#forms').css('display', 'none');
+			$('#tabs'+level+' #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
+			$(this).addClass('ui-btn-down-b');
+			$(this).parent().css('display', 'block');
+		});
+	}
+	else {
+		$('#tabs2 .opt').bind('click', function() {
+			$('#forms').css('display', 'inline');
+			$('#tabs2 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
+			$(this).addClass('ui-btn-down-b');
+		});
 	}
 	
 	$('#tabs1').css('display', 'none');
@@ -209,11 +197,4 @@ function querySuccess(tx, results) {
 	text.value += "Returned rows = " + results.rows.length + "\n";
 	for (var i = 0; i < results.rows.length; i++)
 		text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
-	// this will be true since it was a select statement and so rowsAffected was 0
-	// if (!resultSet.rowsAffected) {
-	  // // console.log('No rows affected!');
-	  // // return false;
-	// }
-	// for an insert statement, this property will return the ID of the last inserted row
-	//console.log("Last inserted row ID = " + results.insertId);
 }
