@@ -9,10 +9,6 @@
 <script src="jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 
-	// var localStore;
-	// var categories = new Array();
-	// var selection = new Array();
-
     // Wait for Cordova to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -20,49 +16,15 @@
     // Cordova is ready
     //
     function onDeviceReady() {
-    	//initDB();
+    // window.onload = function() {
+    	initDB();
         init();
     }
     
     function init() {
 		$('#forms').css('display', 'none');
 		
-		var buttons0 = '<div data-role="controlgroup" data-type="horizontal">';
-		buttons0 += '<a class="opt" data-role="button">1</a>';
-		buttons0 += '<a class="opt" data-role="button">2</a>';
-		buttons0 += '</div>';
-		$('#tabs0').html(buttons0).trigger('create');
-		var buttons1 = '<div data-role="controlgroup" data-type="horizontal">';
-		buttons1 += '<a class="opt" data-role="button">A</a>';
-		buttons1 += '<a class="opt" data-role="button">B</a>';
-		buttons1 += '<a class="opt" data-role="button">C</a>';
-		buttons1 += '<a class="opt" data-role="button">D</a>';
-		buttons1 += '</div>';
-		$('#tabs1').html(buttons1).trigger('create');
-		var buttons2 = '<div data-role="controlgroup" data-type="horizontal">';
-		buttons2 += '<a class="opt" data-role="button">a</a>';
-		buttons2 += '<a class="opt" data-role="button">b</a>';
-		buttons2 += '<a class="opt" data-role="button">c</a>';
-		buttons2 += '<a class="opt" data-role="button">d</a>';
-		buttons2 += '</div>';
-		$('#tabs2').html(buttons2).trigger('create');
-		
-		$('.opt').css('width', window.innerWidth/4-1+'px');
-		
-		$('#tabs0 .opt').bind('click', function() {
-			$('#tabs1').css('display', 'block');
-			$('#tabs2').css('display', 'none');
-			$('#forms').css('display', 'none');
-		});
-		
-		$('#tabs1 .opt').bind('click', function() {
-			$('#tabs2').css('display', 'block');
-			$('#forms').css('display', 'none');
-		});
-		
-		$('#tabs2 .opt').bind('click', function() {
-			$('#forms').css('display', 'inline');
-		});
+		addAllTabs();
 		
 		$('#done').bind('click', function() {
 			$('#forms').css('display', 'none');
@@ -72,53 +34,6 @@
 			$('#forms').css('display', 'none');
 		});
     }
-    
-	// function init() {
-		// localStore = window.localStorage;
-		// var width = window.innerWidth;
-		// if (localStore.key(0) == null) {
-			// localStore.setItem("1.1", "11");
-			// localStore.setItem("1.2", "12");
-			// localStore.setItem("1.3", "13");
-			// localStore.setItem("2.1", "21");
-			// localStore.setItem("2.2", "22");
-		// }
-		// var level = 1;
-		// var next = 1;
-		// var tabdiv = document.getElementById("tabs");
-		// while (true) {
-			// var value = localStore.getItem(level + "." + next);
-			// if (value == null) {
-				// level = level + 1;
-				// next = 1;
-				// value = localStore.getItem(level + "." + next);
-				// if (value == null)
-					// break;
-			// }
-			// var elem = document.createElement('canvas');
-			// elem.id = "canvas" + level + "." + next;
-			// var templev = level;
-			// elem.onclick = function () {cnvs_getCoordinates(event, templev, next)};
-			// elem.style.margin = "0px";
-			// elem.style.width = (width/3-2)+"px";
-			// elem.style.height = "100px";
-			// // elem.style.position = "absolute";
-			// // elem.left = (next-1)*width/3+"px";
-// 			
-			// elem.style.border = "1px solid #c3c3c3";
-// 			
-			// if (level > 1)
-				// elem.style.display = "none";
-			// elem.appendChild(document.createTextNode("Your browser does not support the canvas element."));
-// 			
-			// var ctx=elem.getContext("2d");
-			// ctx.font = "bold 12px sans-serif";
-			// ctx.fillText(level + "." + next, 50, 50);
-// 			
-			// tabdiv.appendChild(elem);
-			// next = next + 1;
-		// }
-	// }
 </script>
 
 </head>
@@ -131,8 +46,8 @@
 <div id="forms" >
 <textarea id="fname" rows="1" cols="30" >3</textarea><br />
 <textarea id="lname" rows="1" cols="30" >Third row</textarea><br />
-<input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
-<input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
+<input id="add" data-inline="true" type="button" value="Add" />
+<input id="read" data-inline="true" type="button" value="Read" /><br />
 <textarea id="text" rows="8" cols="30" >DB</textarea><br />
 <button id="done" data-inline="true" >Done</button>
 <button id="cancel" data-inline="true" >Cancel</button>

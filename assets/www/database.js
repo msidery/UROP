@@ -1,38 +1,76 @@
 var db;
 
 function initDB() {
-    db = window.openDatabase("Test", "1.0", "Test database", 100000);
+    db = window.openDatabase("test", "1.0", "Test database", 100000);
     db.transaction(createTables, errorCB, successCB);
-	db.transaction(populateDB, errorCB, successCB);
+	db.transaction(populateDB, errorCB, populateSuccess);
 }
 
 // Populate the database 
 //
 function createTables(tx) {
-    tx.executeSql('DROP TABLE IF EXISTS DEMO');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS tabs0 (level0, category)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS tabs1 (level0, level1, category)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS tabs2 (level0, level1, level2, category)');
+	tx.executeSql('DROP TABLE IF EXISTS Tabs0');
+	tx.executeSql('DROP TABLE IF EXISTS Tabs1');
+	tx.executeSql('DROP TABLE IF EXISTS Tabs2');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs0 (level0, category)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs1 (level0, level1, category)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs2 (level0, level1, level2, category)');
 }
 
 function populateDB(tx) {
-	tx.executeSql('SELECT 1 FROM tabs0', [], populateSuccess, errorCB);
+	tx.executeSql('SELECT * FROM Tabs0', [], populateSuccess, errorCB);
 }
 
 function populateSuccess(tx, results) {
-	var num = results.rows.length;
+	/*if (window.XMLHttpRequest)
+		xmlhttp = new XMLHttpRequest();
+	else
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	xmlhttp.open("GET", "tabs.xml", false);
+	xmlhttp.send();
+	var xmlDoc = xmlhttp.responseXML;
+
+	var x = xmlDoc.getElementsByTagName("LEVEL0");
+	for (var i = 0; i < x.length; i++) {
+		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i][0].childNodes[0].nodeValue+'")');
+		var y = x[i].getElementsByTagName("LEVEL1");
+		for (var j = 0; j < y.length; y++) {
+			tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j][0].childNodes[0].nodeValue+'")');
+			var z = y[j].getElementsByTagName("LEVEL2");
+			for (var k = 0; k < z.length; k++) {
+				tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k][0].childNodes[0].nodeValue+'")');
+			}
+		}
+	}*/
 	
-	if (num == 0) {
-		tx.executeSql('INSERT INTO tabs0 (level0, category) VALUES (0, "Comment")');
-		tx.executeSql('INSERT INTO tabs0 (level0, category) VALUES (1, "Enthusiasm")');
-		tx.executeSql('INSERT INTO tabs1 (level0, level1, category) VALUES (0, 0, "Cat1")');
-		tx.executeSql('INSERT INTO tabs1 (level0, level1, category) VALUES (0, 1, "Cat2")');
-		tx.executeSql('INSERT INTO tabs1 (level0, level1, category) VALUES (1, 0, "Cat3")');
-		tx.executeSql('INSERT INTO tabs1 (level0, level1, category) VALUES (1, 1, "Cat4")');
-		tx.executeSql('INSERT INTO tabs2 (level0, level1, level2, category) VALUES (0, 0, 0, "Type1")');
-		tx.executeSql('INSERT INTO tabs2 (level0, level1, level2, category) VALUES (0, 1, 0, "Type2")');
-		tx.executeSql('INSERT INTO tabs2 (level0, level1, level2, category) VALUES (1, 0, 0, "Type3")');
-		tx.executeSql('INSERT INTO tabs2 (level0, level1, level2, category) VALUES (1, 1, 0, "Type4")');
+	
+	if (results.rows.length == 0) {
+		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES (0, "1")');
+		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES (1, "2")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 0, "Cat1")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 1, "Cat2")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 2, "Cat3")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (0, 3, "Cat4")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 0, "Cat5")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 1, "Cat6")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 2, "Cat7")');
+		tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES (1, 3, "Cat8")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 0, 0, "1")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 0, 1, "2")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 1, 0, "3")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 1, 1, "4")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 2, 0, "5")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 2, 1, "6")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 3, 0, "7")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (0, 3, 1, "8")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 0, 0, "9")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 0, 1, "10")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 1, 0, "11")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 1, 1, "12")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 2, 0, "13")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 2, 1, "14")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 3, 0, "15")');
+		tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES (1, 3, 1, "16")');
 	}
 }
 
@@ -49,38 +87,140 @@ function errorCBB(err) {
 // Transaction success callback
 //
 function successCB() {
-    //alert("success!");
+	//alert("success!");
 }
 
-function go() {
-    //db.transaction(addDB, errorCB, successCB);
+function addAllTabs() {
+	addTabs(0, []);
 }
 
-function addDB(tx) {
-	var f = document.getElementById("fname").value;
-	var l = document.getElementById("lname").value;
-	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
+function addTabs(level, selection) {
+	function tabQuery(tx) {
+		function tabSuccess(tx, results) {
+			var buttons = '<div id="subtabs';
+			for (var i = 0; i < selection.length; i++)
+				buttons += selection[i] + '-';
+			buttons += '">';
+			buttons += '<div data-role="controlgroup" data-type="horizontal">';
+			for (var i = 0; i < results.rows.length; i++) {
+				if (level < 2) {
+					var next = [];
+					for (var j = 0; j < selection.length; j++)
+						next += selection[j];
+					next += i;
+					addTabs(level+1, next);
+				}
+				buttons += '<a id="btn'+i+'" class="opt" data-role="button" data-theme="a">'+results.rows.item(i).category+'</a>';
+			}
+			buttons += '</div></div>';
+			$('#tabs'+level).append(buttons).trigger('create');
+			addBindings(level);
+		}
+		var queryString = 'SELECT * FROM Tabs'+level;
+		for (var i = 0; i < level; i++) {
+			if (i == 0)
+				queryString += ' WHERE';
+			else
+				queryString += ' AND';
+			queryString += ' level' + i + '=' + selection[i];
+		}
+		// alert(queryString);
+		tx.executeSql(queryString, [], tabSuccess, errorCB);
+	}
+	db.transaction(tabQuery, errorCB, successCB);
 }
 
-function readDB() {
-	//db.transaction(queryDB, errorCBB);
+function addBindings(level) {
+	switch (level) {
+		case 0: {
+			$('#tabs0 .opt').bind('click', function() {
+				hideTabs1();
+				$('#tabs1 #' + $(this).parent().parent().attr('id')
+					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
+				$('#tabs1').css('display', 'block');
+				$('#tabs2').css('display', 'none');
+				$('#forms').css('display', 'none');
+				$('#tabs0 .opt').removeClass('ui-btn-down-b');
+				$(this).addClass('ui-btn-down-b');
+			});
+			break;
+		}
+		case 1: {
+			$('#tabs1 .opt').bind('click', function() {
+				hideTabs2();
+				$('#tabs2 #' + $(this).parent().parent().attr('id')
+					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
+				$('#tabs2').css('display', 'block');
+				$('#forms').css('display', 'none');
+				$('#tabs1 .opt').removeClass('ui-btn-down-b');
+				$(this).addClass('ui-btn-down-b');
+			});
+			break;
+		}
+		case 2: {
+			$('#tabs2 .opt').bind('click', function() {
+				$('#forms').css('display', 'inline');
+				$('#tabs2 .opt').removeClass('ui-btn-down-b');
+				$(this).addClass('ui-btn-down-b');
+			});
+			break;
+		}
+	}
+	
+	$('#tabs1').css('display', 'none');
+	$('#tabs2').css('display', 'none');
+	//alert('#tabs'+level+' #subtabs');
+	//if (level > 0)
+		//$('#tabs'+level+' #' + $(this).parent().parent().attr('id')).css('display', 'none');
+		//$('#tabs'+level+' #subtabs').css('display', 'none');
+	$('#tabs'+level+' .opt').css('width', window.innerWidth/4-1+'px');
 }
 
-function queryDB(tx) {
-	//tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
+function hideTabs1() {
+	$('#tabs1 #subtabs0-').css('display', 'none');
+	$('#tabs1 #subtabs1-').css('display', 'none');
 }
 
-function querySuccess(tx, results) {
-	var text = document.getElementById("text");
-	text.value = "RESULTS\n"
-	text.value += "Returned rows = " + results.rows.length + "\n";
-	for (var i = 0; i < results.rows.length; i++)
-		text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
-	// this will be true since it was a select statement and so rowsAffected was 0
-	// if (!resultSet.rowsAffected) {
-	  // console.log('No rows affected!');
-	  // return false;
-	// }
-	// for an insert statement, this property will return the ID of the last inserted row
-	//console.log("Last inserted row ID = " + results.insertId);
+function hideTabs2() {
+	$('#tabs2 #subtabs0-0-').css('display', 'none');
+	$('#tabs2 #subtabs1-0-').css('display', 'none');
+	$('#tabs2 #subtabs0-1-').css('display', 'none');
+	$('#tabs2 #subtabs1-1-').css('display', 'none');
+	$('#tabs2 #subtabs0-2-').css('display', 'none');
+	$('#tabs2 #subtabs1-2-').css('display', 'none');
+	$('#tabs2 #subtabs0-3-').css('display', 'none');
+	$('#tabs2 #subtabs1-3-').css('display', 'none');
 }
+
+// function go() {
+    // //db.transaction(addDB, errorCB, successCB);
+// }
+// 
+// function addDB(tx) {
+	// var f = document.getElementById("fname").value;
+	// var l = document.getElementById("lname").value;
+	// tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
+// }
+// 
+// function readDB() {
+	// //db.transaction(queryDB, errorCBB);
+// }
+// 
+// function queryDB(tx) {
+	// //tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
+// }
+// 
+// function querySuccess(tx, results) {
+	// var text = document.getElementById("text");
+	// text.value = "RESULTS\n"
+	// text.value += "Returned rows = " + results.rows.length + "\n";
+	// for (var i = 0; i < results.rows.length; i++)
+		// text.value += results.rows.item(i).id + ": " + results.rows.item(i).data + "\n";
+	// // this will be true since it was a select statement and so rowsAffected was 0
+	// // if (!resultSet.rowsAffected) {
+	  // // console.log('No rows affected!');
+	  // // return false;
+	// // }
+	// // for an insert statement, this property will return the ID of the last inserted row
+	// //console.log("Last inserted row ID = " + results.insertId);
+// }
