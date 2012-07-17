@@ -126,18 +126,17 @@ function addTabs(level, selection) {
 function addBindings(level) {
 	if (level < 2) {
 		$('#tabs'+level+' .opt').bind('click', function() {
-			switch (level) {
-				case 0: { hideTabs1(); break; }
-				case 1: { hideTabs2(); break; }
-			}
+			$('#tabs'+(level+1)).children().css('display', 'none');
 			$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
 				+ $(this).attr('id').substring(3)+'-').css('display', 'block');
-			$('#tabs'+(level+1)).css('display', 'block');
-			$('#tabs'+(level+2)).css('display', 'none');
 			$('#forms').css('display', 'none');
 			$('#tabs'+level+' #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
 			$(this).addClass('ui-btn-down-b');
 			$(this).parent().css('display', 'block');
+			$('#tabs'+(level+2)).children().css('display', 'none');
+			$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
+				+ $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
+				+'- .ui-btn-down-b').attr('id').substring(3)+'-').css('display', 'block');
 		});
 	}
 	else {
@@ -148,29 +147,9 @@ function addBindings(level) {
 		});
 	}
 	
-	$('#tabs1').css('display', 'none');
-	$('#tabs2').css('display', 'none');
-	//alert('#tabs'+level+' #subtabs');
-	//if (level > 0)
-		//$('#tabs'+level+' #' + $(this).parent().attr('id')).css('display', 'none');
-		//$('#tabs'+level+' #subtabs').css('display', 'none');
+	if (level > 0)
+		$('#tabs'+level).children().css('display', 'none');
 	$('#tabs'+level+' .opt').css('width', window.innerWidth/4-1+'px');
-}
-
-function hideTabs1() {
-	$('#tabs1 #subtabs0-').css('display', 'none');
-	$('#tabs1 #subtabs1-').css('display', 'none');
-}
-
-function hideTabs2() {
-	$('#tabs2 #subtabs0-0-').css('display', 'none');
-	$('#tabs2 #subtabs1-0-').css('display', 'none');
-	$('#tabs2 #subtabs0-1-').css('display', 'none');
-	$('#tabs2 #subtabs1-1-').css('display', 'none');
-	$('#tabs2 #subtabs0-2-').css('display', 'none');
-	$('#tabs2 #subtabs1-2-').css('display', 'none');
-	$('#tabs2 #subtabs0-3-').css('display', 'none');
-	$('#tabs2 #subtabs1-3-').css('display', 'none');
 }
 
 function go() {
