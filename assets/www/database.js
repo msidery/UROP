@@ -138,9 +138,12 @@ function addBindings(level) {
 				if (level < 1) {
 					$('#tabs'+(level+2)).children().css('display', 'none');
 					// show third level tabs corresponding to already highlighted second level tab
-					$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
-						+ $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
-						+'- .ui-btn-down-b').attr('id').substring(3)+'-').css('display', 'block');
+					// but only if there exists a highlighted button 
+					var btn = $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
+						+'- .ui-btn-down-b').attr('id');
+					if (btn != undefined)
+						$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
+							+ btn.substring(3)+'-').css('display', 'block');
 				}
 			}
 		});
