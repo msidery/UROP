@@ -82,7 +82,7 @@ function addBindings(level) {
 	function extras(level) {
 		$('#control'+level+' .opt').bind('click', function() {
 			var num = $(this).attr('id').substring(3);
-			$('#text').text($('#text').text()+';'+$(this).text());
+			$('#text').text(document.getElementById('text').value+';'+$(this).text());
 		});
 	}
 	function addSwipe(level) {
@@ -138,7 +138,7 @@ function initHighlights() {
 }
 
 function setupDimensions() {
-	$('.opt').css('width', width/4-1+'px');
+	$('.opt').css('width', width/4+'px');
 	//$('#tabs').css('width', width+'px');
 	//$('#tabs').css('overflow', 'hidden');
 	$('.subtab').css('width', width+'px');
