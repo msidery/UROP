@@ -1,5 +1,6 @@
 var db;
 var width = window.innerWidth;
+var slideSpeed = 500;
 
 function init() {
 	initDB();
@@ -42,31 +43,30 @@ function createTables(tx) {
 }
 
 function populateDB(tx) {
-	tx.executeSql('SELECT * FROM Tabs0', [], populateSuccess, errorCB);
-}
-
-function populateSuccess(tx, results) {
-	var xmlhttp;
-	if (window.XMLHttpRequest)
-		xmlhttp = new XMLHttpRequest();
-	else
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp.open("GET", "tabs.xml", false);
-	xmlhttp.send();
-	var xmlDoc = xmlhttp.responseXML;
-
-	var x = xmlDoc.getElementsByTagName("LEVEL0");
-	for (var i = 0; i < x.length; i++) {
-		tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i].childNodes[0].nodeValue+'")');
-		var y = x[i].getElementsByTagName("LEVEL1");
-		for (var j = 0; j < y.length; j++) {
-			tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j].childNodes[0].nodeValue+'")');
-			var z = y[j].getElementsByTagName("LEVEL2");
-			for (var k = 0; k < z.length; k++) {
-				tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k].childNodes[0].nodeValue+'")');
+	function populateSuccess(tx, results) {
+		var xmlhttp;
+		if (window.XMLHttpRequest)
+			xmlhttp = new XMLHttpRequest();
+		else
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp.open("GET", "tabs.xml", false);
+		xmlhttp.send();
+		var xmlDoc = xmlhttp.responseXML;
+	
+		var x = xmlDoc.getElementsByTagName("LEVEL0");
+		for (var i = 0; i < x.length; i++) {
+			tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i].childNodes[0].nodeValue+'")');
+			var y = x[i].getElementsByTagName("LEVEL1");
+			for (var j = 0; j < y.length; j++) {
+				tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j].childNodes[0].nodeValue+'")');
+				var z = y[j].getElementsByTagName("LEVEL2");
+				for (var k = 0; k < z.length; k++) {
+					tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k].childNodes[0].nodeValue+'")');
+				}
 			}
 		}
 	}
+	tx.executeSql('SELECT * FROM Tabs0', [], populateSuccess, errorCB);
 }
 
 // Transaction error callback
@@ -156,9 +156,19 @@ function addBindings(level) {
 		});
 	}
 	
+	$('#tabs').children().bind('swipeleft', function(){
+		$(this).animate({ marginLeft: -width }, slideSpeed, function () {});
+	});
+	
+	$('#tabs').children().bind('swiperight', function(){
+		$(this).animate({ marginLeft: 0 }, slideSpeed, function () {});
+	});
+	
 	if (level > 0)
 		$('#tabs'+level).children().css('display', 'none');
 	$('#tabs'+level+' .opt').css('width', width/4-1+'px');
+	//$('#tabs'+level+' .opt').css('width', '100px');
+	//$('#tabs').css('width', width+'px');
 }
 
 function go() {

@@ -12,6 +12,10 @@
     // Wait for Cordova to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
+    
+    touchmove = function(event) {
+    	event.preventDefault();
+    }
 
     // Cordova is ready
     //
@@ -22,11 +26,12 @@
 </script>
 
 </head>
-<body style="margin:0px;padding:0px;background:#FFFFFF;">
-
+<body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
+<div id="tabs">
 <div id="tabs0"></div>
 <div id="tabs1"></div>
 <div id="tabs2"></div>
+</div>
 
 <div id="forms" >
 <textarea id="fname" rows="1" cols="30" >3</textarea>
