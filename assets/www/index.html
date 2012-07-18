@@ -23,16 +23,23 @@
     function onDeviceReady() {
     // window.onload = function() {
 		//initDB();
-		//initUI();
-		createTabs();
-		addBindings();
+		initUI();
     }
 </script>
 
 </head>
-<!--<body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">-->
-<body style="margin:0px;padding:0px;background:#FFFFFF;">
+<body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
+<!--<body style="margin:0px;padding:0px;background:#FFFFFF;">-->
 <div id="tabs">
+</div>
+<div>
+	<textarea id="text" rows="8" cols="30" placeholder="Extra comments" ></textarea>
+</div>
+<div data-role="controlgroup" data-type="horizontal">
+	<a id="photo" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Photo</a>
+	<a id="video" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Video</a>
+	<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>
+	<a id="enter" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >ENTER</a>
 </div>
 
 <!--<div id="forms" >
@@ -43,7 +50,6 @@
 <textarea id="text" rows="8" cols="30" >DB</textarea><br />
 <button id="done" data-inline="true" >Done</button>
 <button id="cancel" data-inline="true" >Cancel</button>
-</div>
-<a id="camera" href="" data-inline="true" data-role="button" data-theme="a" >Camera</a>-->
+</div>-->
 </body>
 </html>
