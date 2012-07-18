@@ -4,6 +4,7 @@
 <title>Cordova</title>
 <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
 <script type="text/javascript" charset="utf-8" src="database.js"></script>
+<script type="text/javascript" charset="utf-8" src="ui.js"></script>
 <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
 <script src="jquery-1.7.2.min.js"></script>
 <script src="jquery.mobile-1.1.0.min.js"></script>
@@ -21,19 +22,18 @@
     //
     function onDeviceReady() {
     // window.onload = function() {
-    	init();
+		//initDB();
+		//initUI();
     }
 </script>
 
 </head>
+<!--<body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">-->
 <body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
 <div id="tabs">
-<div id="tabs0"></div>
-<div id="tabs1"></div>
-<div id="tabs2"></div>
 </div>
 
-<div id="forms" >
+<!--<div id="forms" >
 <textarea id="fname" rows="1" cols="30" >3</textarea>
 <textarea id="lname" rows="1" cols="30" >Third row</textarea>
 <input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
@@ -41,6 +41,43 @@
 <textarea id="text" rows="8" cols="30" >DB</textarea><br />
 <button id="done" data-inline="true" >Done</button>
 <button id="cancel" data-inline="true" >Cancel</button>
+</div>
+<a id="camera" href="" data-inline="true" data-role="button" data-theme="a" >Camera</a>-->
+<div style="width:800px;"  ontouchmove="touchmove(event)" >
+	<div data-role="controlgroup" data-type="horizontal">
+		<a data-role="button">AAAAAAAA</a>
+		<a data-role="button">BBBBBBBB</a>
+		<a data-role="button">CCCCCCCC</a>
+		<a data-role="button">DDDDDDDD</a>
+	</div>
+	<div style="display:inline;" >
+		<div data-role="controlgroup" data-type="horizontal">
+			<a data-role="button">1</a>
+			<a data-role="button">2</a>
+			<a data-role="button">3</a>
+		</div>
+		<div style="display:inline;" >
+			<div data-role="controlgroup" data-type="horizontal">
+				<a data-role="button">a</a>
+				<a data-role="button">b</a>
+				<a data-role="button">c</a>
+			</div>
+		</div>
+	</div>
+	<div style="display:inline;" >
+		<div data-role="controlgroup" data-type="horizontal">
+			<a data-role="button">4</a>
+			<a data-role="button">5</a>
+			<a data-role="button">6</a>
+		</div>
+		<div style="display:inline;" >
+			<div data-role="controlgroup" data-type="horizontal">
+				<a data-role="button">d</a>
+				<a data-role="button">e</a>
+				<a data-role="button">f</a>
+			</div>
+		</div>
+	</div>
 </div>
 </body>
 </html>

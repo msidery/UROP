@@ -1,30 +1,9 @@
 var db;
-var width = window.innerWidth;
-var slideSpeed = 500;
-
-function init() {
-	initDB();
-	initUI();
-}
 
 function initDB() {
     db = window.openDatabase("test", "1.0", "Test database", 100000);
     db.transaction(createTables, errorCB, successCB);
 	db.transaction(populateDB, errorCB, successCB);
-}
-
-function initUI() {
-	$('#forms').css('display', 'none');
-	
-	addAllTabs();
-	
-	$('#done').bind('click', function() {
-		$('#forms').css('display', 'none');
-	});
-	
-	$('#cancel').bind('click', function() {
-		$('#forms').css('display', 'none');
-	});
 }
 
 // Populate the database 
@@ -42,33 +21,6 @@ function createTables(tx) {
 	tx.executeSql('INSERT INTO Demo (id, data) VALUES (2, "Second row")');
 }
 
-function populateDB(tx) {
-	function populateSuccess(tx, results) {
-		var xmlhttp;
-		if (window.XMLHttpRequest)
-			xmlhttp = new XMLHttpRequest();
-		else
-			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		xmlhttp.open("GET", "tabs.xml", false);
-		xmlhttp.send();
-		var xmlDoc = xmlhttp.responseXML;
-	
-		var x = xmlDoc.getElementsByTagName("LEVEL0");
-		for (var i = 0; i < x.length; i++) {
-			tx.executeSql('INSERT INTO Tabs0 (level0, category) VALUES ('+i+', "'+x[i].childNodes[0].nodeValue+'")');
-			var y = x[i].getElementsByTagName("LEVEL1");
-			for (var j = 0; j < y.length; j++) {
-				tx.executeSql('INSERT INTO Tabs1 (level0, level1, category) VALUES ('+i+', '+j+', "'+y[j].childNodes[0].nodeValue+'")');
-				var z = y[j].getElementsByTagName("LEVEL2");
-				for (var k = 0; k < z.length; k++) {
-					tx.executeSql('INSERT INTO Tabs2 (level0, level1, level2, category) VALUES ('+i+', '+j+', '+k+', "'+z[k].childNodes[0].nodeValue+'")');
-				}
-			}
-		}
-	}
-	tx.executeSql('SELECT * FROM Tabs0', [], populateSuccess, errorCB);
-}
-
 // Transaction error callback
 //
 function errorCB(tx, err) {
@@ -83,92 +35,6 @@ function errorCBB(err) {
 //
 function successCB() {
 	//alert("success!");
-}
-
-function addAllTabs() {
-	addTabs(0, []);
-}
-
-function addTabs(level, selection) {
-	function tabQuery(tx) {
-		function tabSuccess(tx, results) {
-			var buttons = '<div id="subtabs';
-			for (var i = 0; i < selection.length; i++)
-				buttons += selection[i] + '-';
-			buttons += '" data-role="controlgroup" data-type="horizontal">';
-			for (var i = 0; i < results.rows.length; i++) {
-				if (level < 2) {
-					var next = [];
-					for (var j = 0; j < selection.length; j++)
-						next += selection[j];
-					next += i;
-					addTabs(level+1, next);
-				}
-				buttons += '<a id="btn'+i+'" class="opt" data-role="button" data-theme="a">'+results.rows.item(i).category+'</a>';
-			}
-			buttons += '</div>';
-			$('#tabs'+level).append(buttons).trigger('create');
-			addBindings(level);
-		}
-		var queryString = 'SELECT * FROM Tabs'+level;
-		for (var i = 0; i < level; i++) {
-			if (i == 0)
-				queryString += ' WHERE';
-			else
-				queryString += ' AND';
-			queryString += ' level' + i + '=' + selection[i];
-		}
-		// alert(queryString);
-		tx.executeSql(queryString, [], tabSuccess, errorCB);
-	}
-	db.transaction(tabQuery, errorCB, successCB);
-}
-
-function addBindings(level) {
-	if (level < 2) {
-		$('#tabs'+level+' .opt').bind('click', function() {
-			$('#forms').css('display', 'none');
-			$('#tabs'+level+' #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
-			$(this).addClass('ui-btn-down-b');
-			$(this).parent().css('display', 'block');
-			if (level < 2) {
-				$('#tabs'+(level+1)).children().css('display', 'none');
-				$('#tabs'+(level+1)+' #' + $(this).parent().attr('id')
-					+ $(this).attr('id').substring(3)+'-').css('display', 'block');
-				if (level < 1) {
-					$('#tabs'+(level+2)).children().css('display', 'none');
-					// show third level tabs corresponding to already highlighted second level tab
-					// but only if there exists a highlighted button 
-					var btn = $('#tabs'+(level+1)+' #subtabs' + $(this).attr('id').substring(3)
-						+'- .ui-btn-down-b').attr('id');
-					if (btn != undefined)
-						$('#tabs'+(level+2)+' #' + $(this).parent().attr('id')+$(this).attr('id').substring(3)+'-'
-							+ btn.substring(3)+'-').css('display', 'block');
-				}
-			}
-		});
-	}
-	else {
-		$('#tabs2 .opt').bind('click', function() {
-			$('#forms').css('display', 'inline');
-			$('#tabs2 #'+$(this).parent().attr('id')+' .opt').removeClass('ui-btn-down-b');
-			$(this).addClass('ui-btn-down-b');
-		});
-	}
-	
-	$('#tabs').children().bind('swipeleft', function(){
-		$(this).animate({ marginLeft: -width }, slideSpeed, function () {});
-	});
-	
-	$('#tabs').children().bind('swiperight', function(){
-		$(this).animate({ marginLeft: 0 }, slideSpeed, function () {});
-	});
-	
-	if (level > 0)
-		$('#tabs'+level).children().css('display', 'none');
-	$('#tabs'+level+' .opt').css('width', width/4-1+'px');
-	//$('#tabs'+level+' .opt').css('width', '100px');
-	//$('#tabs').css('width', width+'px');
 }
 
 function go() {
