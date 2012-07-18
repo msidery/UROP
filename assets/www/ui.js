@@ -5,7 +5,7 @@ var slideSpeed = 500;
 function initUI() {
 	createTabs();
 	addBindings();
-	initHighlights();
+	initDisplay();
 	setupDimensions();
 }
 
@@ -58,19 +58,23 @@ function createTabs() {
 		yhtml[i] += '</div>\n';
 		for (var z = 0; z < zhtml.length; z++)
 			yhtml[i] += zhtml[z] + '</div>';
-		yhtml[i] += '</div>\n';
+		//yhtml[i] += '</div>\n';
 	}
 	xhtml += '</div>\n';
 	for (var y = 0; y < yhtml.length; y++)
 		xhtml += yhtml[y] + '</div>';
 	xhtml += '</div>\n';
 	$('#tabs').html($(xhtml)).trigger('create');
+	//document.write(xhtml);
 }
 
 function addBindings(level) {
 	$('.controlgroup .opt').bind('click', function() {
 		var num = $(this).attr('id').substring(3);
 		var lev = $(this).parent().attr('id').substring(7);
+		if (lev.length < 1) {
+			//$('#subtab'+$('#subtab'+num+' .ui-btn-down-b').attr('id').substring(3)).css('display', 'block');
+		}
 		if (lev.length < 3) {
 			// $('#forms').css('display', 'none');
 			$('#control'+lev+' .opt').removeClass('ui-btn-down-b');
@@ -100,14 +104,11 @@ function addBindings(level) {
 	$('#cancel').bind('click', function() {
 		resetEntries();
 	});
-	
-	$('.sub').css('display', 'none');
-	$('#toplevel').css('display', 'block');
-	$('#subtab0').css('display', 'block');
-	$('#subtab0-0').css('display', 'block');
 }
 
-function initHighlights() {
+function initDisplay() {
+	$('.sub').css('display', 'none');
+	$('#toplevel').css('display', 'block');
 	$('#btn0').addClass('ui-btn-down-b');
 	$('#subtab0').css('display', 'block');
 	$('#btn0-0').addClass('ui-btn-down-b');
@@ -117,7 +118,7 @@ function initHighlights() {
 }
 
 function resetEntries() {
-	$('.sub .sub .sub .opt').removeClass('ui-btn-down-b');
+	$('.sub .sub .sub .ui-btn-down-b').removeClass('ui-btn-down-b');
 	$('#text').text('');
 }
 
