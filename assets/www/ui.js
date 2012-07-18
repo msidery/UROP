@@ -124,6 +124,12 @@ function addBindings(level) {
 	
 	$('#enter').bind('click', function() {
 		// add stuff to the DB
+		resetHighlights();
+		$('#text').text('');
+	});
+	
+	$('#cancel').bind('click', function() {
+		resetHighlights();
 		$('#text').text('');
 	});
 }
@@ -137,6 +143,10 @@ function initHighlights() {
 	$('#subtab1-0').css('display', 'block');
 }
 
+function resetHighlights() {
+	
+}
+
 function setupDimensions() {
 	$('.opt').css('width', width/4+'px');
 	//$('#tabs').css('width', width+'px');
@@ -145,5 +155,5 @@ function setupDimensions() {
 	$('.subtab').css('overflow', 'hidden');
 	$('.control').css('width', 4*width+'px');
 	$('#text').css('height', (height-4*($('#enter').height()+15))+'px');
-	$('.bottom_opt').css('width', (width/4-1)+'px');
+	$('.bottom_opt').css('width', (width-3)/5+'px');
 }
