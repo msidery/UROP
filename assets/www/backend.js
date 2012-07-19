@@ -1,13 +1,11 @@
-var captureDevice;
+	var captureDevice;
     var sql;
     var id = 0;
-	/** Add device ready event that will be triggered when library is loaded */
-   	document.addEventListener("deviceready", onDeviceReady, false);
     
     $("#database").listview('option', 'filterCalback', searchDB) 
         
     /** Called when phonegap javascript is loaded */
-    function onDeviceReady() {
+    function initBackend() {
         	
    		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
    		window.resolveLocalFileSystemURI("file:///mnt/sdcard", onResolveSuccess, fail);
@@ -25,7 +23,7 @@ var captureDevice;
 		
 		
 	}
-	/* If filesystem is retrieved succesfully */
+	/* If filesystem is retrieved successfully */
 	function onFileSystemSuccess(fileSystem) {
 		console.log(fileSystem.name);
 		console.log(fileSystem.root.name);
@@ -36,7 +34,7 @@ var captureDevice;
 		console.log(evt.target.error.code);
 	}
 	
-	/* if the URI is resolved succesfully create a directory reader to list the contents */
+	/* if the URI is resolved successfully create a directory reader to list the contents */
 	function onResolveSuccess(fileEntry) {
 		var directoryReader = fileEntry.createReader();
 		directoryReader.readEntries(onSuccessRead, onErrorRead);

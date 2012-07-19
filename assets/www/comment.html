@@ -10,9 +10,9 @@
 <script src="jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 
-    // Wait for Cordova to load
-    //
-    document.addEventListener("deviceready", onDeviceReady, false);
+	/** Add device ready event that will be triggered when library is loaded */
+   	document.addEventListener("deviceready", onDeviceReady, false);
+
     window.orientationchange = function() {
     	turn(window.orientation);
     }
@@ -41,6 +41,7 @@
     function onDeviceReady() {
     // window.onload = function() {
 		//initDB();
+		//initBackend();
 		initUI();
     }
 </script>
@@ -60,15 +61,5 @@
 	<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>
 	<a id="cancel" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >CANCEL</a>
 </div>
-
-<!--<div id="forms" >
-<textarea id="fname" rows="1" cols="30" >3</textarea>
-<textarea id="lname" rows="1" cols="30" >Third row</textarea>
-<input id="add" data-inline="true" type="button" onclick="go()" value="Add" />
-<input id="read" data-inline="true" type="button" onclick="readDB()" value="Read" /><br />
-<textarea id="text" rows="8" cols="30" >DB</textarea><br />
-<button id="done" data-inline="true" >Done</button>
-<button id="cancel" data-inline="true" >Cancel</button>
-</div>-->
 </body>
 </html>

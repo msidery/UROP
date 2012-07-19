@@ -3,26 +3,28 @@ var db;
 function initDB() {
     db = window.openDatabase("test", "1.0", "Test database", 100000);
     db.transaction(createTables, errorCB, successCB);
-	db.transaction(populateDB, errorCB, successCB);
+	//db.transaction(populateDB, errorCB, successCB);
 }
 
-// Populate the database 
-//
+/*
+ * sessionID timestamp comment ---1-----N--- sessionID timestamp tag
+ * 
+ */
+
+/* Create the tables */
 function createTables(tx) {
-	tx.executeSql('DROP TABLE IF EXISTS Tabs0');
-	tx.executeSql('DROP TABLE IF EXISTS Tabs1');
-	tx.executeSql('DROP TABLE IF EXISTS Tabs2');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs0 (level0, category)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs1 (level0, level1, category)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Tabs2 (level0, level1, level2, category)');
-	tx.executeSql('DROP TABLE IF EXISTS Demo');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Demo (id unique, data)');
-	tx.executeSql('INSERT INTO Demo (id, data) VALUES (1, "First row")');
-	tx.executeSql('INSERT INTO Demo (id, data) VALUES (2, "Second row")');
+	function dropTables() {
+		tx.executeSql('DROP TABLE IF EXISTS Session');
+		tx.executeSql('DROP TABLE IF EXISTS Comments');
+		tx.executeSql('DROP TABLE IF EXISTS Tags');
+	}
+	//dropTables();
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Session (sessionID unique, fname, lname, date, subject, module)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Comments (sessionID, timestamp, comment)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS Tags (sessionID, timestamp, tag)');
 }
 
-// Transaction error callback
-//
+/* Transaction error callback */
 function errorCB(tx, err) {
     alert("Error processing SQL: "+err);
 }
@@ -31,8 +33,7 @@ function errorCBB(err) {
     alert("Error processing SQL: "+err.code);
 }
 
-// Transaction success callback
-//
+/* Transaction success callback */
 function successCB() {
 	//alert("success!");
 }
