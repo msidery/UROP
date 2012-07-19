@@ -15,10 +15,27 @@ var zmove; // third level tabs
 
 /* setup the user interface */
 function initUI() {
+	addOptions();
 	createTabs();
 	addBindings();
 	initDisplay();
 	setupDimensions();
+}
+
+function addOptions() {
+	var body = '<div id="tabs">';
+	body += '</div>';
+	body += '<div>';
+	body += '<textarea id="text" rows="8" cols="30" placeholder="Extra comments" ></textarea>';
+	body += '</div>';
+	body += '<div data-role="controlgroup" data-type="horizontal" width="'+width+'">';
+	body += '<a id="enter" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >ENTER</a>';
+	body += '<a id="photo" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Photo</a>';
+	body += '<a id="video" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Video</a>';
+	body += '<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>';
+	body += '<a id="cancel" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >CANCEL</a>';
+	body += '</div>';
+	$('body').html(body).trigger('create');
 }
 
 /* create and add all the tabs to the ui from an xml file.
@@ -87,7 +104,7 @@ function createTabs() {
 	
 	var yhtml = new Array();
 	var x = xmlDoc.getElementsByTagName("LEVEL0");
-	var xhtml = '<div id="toplevel" class="sub" style="width:'+width+'">\n';
+	var xhtml = '<div id="toplevel" class="sub initsub" style="width:'+width+'">\n';
 	xhtml += '<div id="control" class="controlgroup" data-role="controlgroup" data-type="horizontal">\n';
 	
 	// top level elements
@@ -97,7 +114,10 @@ function createTabs() {
 		zmove[i] = new Array();
 		tablengths[i] = new Array();
 		
-		xhtml += '<a id="btn'+i+'" class="opt" data-role="button" data-theme="a"';
+		xhtml += '<a id="btn'+i+'" class="opt';
+		if (i == 0)
+			xhtml += ' initbtn';
+		xhtml += '" data-role="button" data-theme="a"';
 		// add a left arrow icon if there are more buttons left of this one
 		if (i != 0 && i%numtabs == 0)
 			xhtml += ' data-icon="arrow-l"';
@@ -106,7 +126,10 @@ function createTabs() {
 			xhtml += ' data-icon="arrow-r" data-iconpos="right"';
 		xhtml += '>' + x[i].childNodes[0].nodeValue + '</a>\n';
 		var zhtml = new Array();
-		yhtml[i] = '<div id="subtab'+i+'" class="subtab sub" >\n';
+		yhtml[i] = '<div id="subtab'+i+'" class="subtab sub';
+		if (i == 0)
+			yhtml[i] += ' initsub';
+		yhtml[i] += '" >\n';
 		yhtml[i] += '<div id="control'+i+'" class="control controlgroup" data-role="controlgroup" data-type="horizontal">\n';
 		
 		// second level elements
@@ -115,14 +138,20 @@ function createTabs() {
 			zmove[i][j] = 0;
 			tablengths[i][j] = z.length;
 			
-			yhtml[i] += '<a id="btn'+i+'-'+j+'" class="opt" data-role="button" data-theme="a"';
+			yhtml[i] += '<a id="btn'+i+'-'+j+'" class="opt';
+			if (j == 0)
+				yhtml[i] += ' initbtn';
+			yhtml[i] +='" data-role="button" data-theme="a"';
 			if (j != 0 && j%numtabs == 0)
 				yhtml[i] += ' data-icon="arrow-l"';
 			else if (j%numtabs == 3 && j != y.length-1)
 				yhtml[i] += ' data-icon="arrow-r" data-iconpos="right"';
 			yhtml[i] += '>' + y[j].childNodes[0].nodeValue + '</a>\n';
 			
-			zhtml[j] = '<div id="subtab'+i+'-'+j+'" class="subtab'+i+' sub" >\n';
+			zhtml[j] = '<div id="subtab'+i+'-'+j+'" class="subtab'+i+' sub';
+			if (j == 0)
+				zhtml[j] += ' initsub';
+			zhtml[j] += '" >\n';
 			zhtml[j] += '<div id="control'+i+'-'+j+'" class="control'+i+' controlgroup" data-role="controlgroup" data-type="horizontal">\n';
 			
 			// third level elements
@@ -249,11 +278,8 @@ function initDisplay() {
 	// hide all tab groups
 	$('.sub').css('display', 'none');
 	// show the first of each tab group
-	$('#toplevel').css('display', 'block');
-	$('#btn0').addClass('ui-btn-down-b');
-	$('#subtab0').css('display', 'block');
-	$('#btn0-0').addClass('ui-btn-down-b');
-	$('#subtab0-0').css('display', 'block');
+	$('.initbtn').addClass('ui-btn-down-b');
+	$('.initsub').css('display', 'block');
 }
 
 // remove highlights from all third level buttons and reset the text box
@@ -271,5 +297,5 @@ function setupDimensions() {
 	$('.controlgroup').css('margin-top', '1px');
 	$('.controlgroup').css('margin-bottom', '2px');
 	$('#text').css('height', (height-4*($('#enter').height()+10))+'px');
-	$('.bottom_opt').css('width', (width-3)/5+'px');
+	$('.bottom_opt').css('width', width/5+'px');
 }

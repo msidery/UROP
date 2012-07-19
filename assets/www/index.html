@@ -11,7 +11,7 @@
 <script type="text/javascript" charset="utf-8">
 
 	/** Add device ready event that will be triggered when library is loaded */
-   	document.addEventListener("deviceready", onDeviceReady, false);
+   	//document.addEventListener("deviceready", onDeviceReady, false);
 
     window.orientationchange = function() {
     	turn(window.orientation);
@@ -38,28 +38,19 @@
 
     // Cordova is ready
     //
-    function onDeviceReady() {
-    // window.onload = function() {
+    //function onDeviceReady() {
+    window.onload = function() {
 		//initDB();
 		//initBackend();
-		initUI();
+		//initUI();
+		$('#enter').bind('click', function() {
+			initUI();
+		});
     }
 </script>
 
 </head>
 <body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
-<!--<body style="margin:0px;padding:0px;background:#FFFFFF;">-->
-<div id="tabs">
-</div>
-<div>
-	<textarea id="text" rows="8" cols="30" placeholder="Extra comments" ></textarea>
-</div>
-<div data-role="controlgroup" data-type="horizontal">
-	<a id="enter" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >ENTER</a>
-	<a id="photo" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Photo</a>
-	<a id="video" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Video</a>
-	<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>
-	<a id="cancel" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >CANCEL</a>
-</div>
+	<a id="enter" data-inline="true" data-role="button" data-theme="c" >GO</a>
 </body>
 </html>
