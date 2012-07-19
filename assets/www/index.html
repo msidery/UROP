@@ -13,6 +13,24 @@
     // Wait for Cordova to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
+    window.orientationchange = function() {
+    	turn(window.orientation);
+    }
+    
+    function turn(orientation) {
+    	switch (orientation) {
+    		case 0:
+    		case 180:
+    		{
+    			break;
+    		}
+    		case 90:
+    		case -90:
+    		{
+    			break;
+    		}
+    	}
+    }
     
     touchmove = function(event) {
     	event.preventDefault();
