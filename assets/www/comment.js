@@ -16,12 +16,14 @@ var zmove; // third level tabs
 var sessionData;
 
 function showCommentUI(data) {
-	sessionData = data;
-	var dbData = new Array();
-	dbData[0] = data[0];
-	for (var i = 1; i < data.length; i++)
-		dbData[i] = '"'+data[i]+'"';
-	insertData('session', dbData);
+	if (data != undefined) {
+		sessionData = data;
+		var dbData = new Array();
+		dbData[0] = data[0];
+		for (var i = 1; i < data.length; i++)
+			dbData[i] = '"'+data[i]+'"';
+		insertData('session', dbData);
+	}
 	$('.wrapper').css('display', 'none');
 	$('#commentwrapper').css('display', 'block');
 	$('#sessiontitle').text('Session: ' + sessionData);
@@ -47,13 +49,14 @@ function addOptions() {
 	// adds a textarea and buttons at the bottom of the page
 	// for accepting the input and interacting with the camera
 	body += '<div>';
-	body += '<textarea id="text" rows="8" cols="30" placeholder="Extra comments" ></textarea>';
+	body += '<textarea id="text" rows="8" cols="30" placeholder="Extra comments" style="float:left;" ></textarea>';
+	body += '<div id="links" style="border:1px solid #CCCCCC;float:right;" ></div>';
 	body += '</div>';
-	body += '<div data-role="controlgroup" data-type="horizontal" width="'+width+'">';
+	body += '<div id="camera" data-role="controlgroup" data-type="horizontal" width="'+width+'" style="clear:both;">';
 	body += '<a id="enter" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >ENTER</a>';
-	body += '<a id="photo" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Photo</a>';
-	body += '<a id="video" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Video</a>';
-	body += '<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>';
+	body += '<a id="photo" class="bottom_opt" data-inline="true" data-role="button" data-theme="a" onclick="takePicture()" >Photo</a>';
+	body += '<a id="video" class="bottom_opt" data-inline="true" data-role="button" data-theme="a" onclick="takeVideo()" >Video</a>';
+	body += '<a id="audio" class="bottom_opt" data-inline="true" data-role="button" data-theme="a" onclick="captureAudio()" >Audio</a>';
 	body += '<a id="cancel" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >CANCEL</a>';
 	body += '</div>';
 	$('#commentwrapper').html(top+body).trigger('create');
@@ -284,33 +287,31 @@ function addCommentBindings(level) {
 		$(this).animate({ marginLeft: move*width }, slideSpeed, function () {});
 	});
 	
-	/*$('#enter').bind('click', function() {
-		alert('SELECT * FROM comment WHERE sessionID='+sessionData[0]+' ORDER BY commentID DESC');
+	$('#enter').bind('click', function() {
 		selectData('SELECT * FROM comment WHERE sessionID='+sessionData[0]+' ORDER BY commentID DESC',
 			function(tx, results) {
 				var data = new Array(); // sid,cid,time,cat1,cat2,comment
 				data[0] = sessionData[0];
-				
+
 				if (results.rows.length == 0)
 					data[1] = 0;
 				else
 					data[1] = results.rows.item(0).commentID + 1;
-				
+
 				data[2] = '"'+getTimestamp()+'"';
 				
-				var btn1 = $('#control ui-btn-down-b').attr('id').substring(3);
-				var btn2 = $('#control'+btn1).attr('id').split('-')[1];
+				var btn1 = $('#control .ui-btn-down-b').attr('id').substring(3);
+				var btn2 = $('#control'+btn1+' .ui-btn-down-b').attr('id').split('-')[1];
 				data[3] = '"'+btn1+'"';
 				data[4] = '"'+btn2+'"';
 				data[5] = '"'+$('#text').val()+'"';
-				alert('comment' + data);
 				insertData('comment', data);
 				// add stuff to the DB
 				resetEntries();
 			},
 			'Failed to get a comment ID!'
 		)
-	});*/
+	});
 	
 	$('#cancel').bind('click', function() {
 		resetEntries();
@@ -343,11 +344,16 @@ function setupDimensions() {
 	$('.sub').css('width', width+'px');
 	$('.sub').css('overflow', 'hidden');
 	$('.controlgroup').css('width', numtabs*width+'px');
+	$('#camera').css('margin-top', '1px');
+	$('#camera').css('margin-bottom', '2px');
 	$('.controlgroup').css('margin-top', '1px');
 	$('.controlgroup').css('margin-bottom', '2px');
 	$('#topbar').height($('#back').height());
 	$('#topbar').css('padding', 'auto auto auto 10px');
 	$('#back').css('margin', 'auto 10px auto');
 	$('#text').css('height', (height-4*($('#enter').height()+10)-($('#topbar').height()+6))+'px');
+	$('#text').css('width', width*3/4-10+'px');
+	$('#links').css('height', (height-4*($('#enter').height()+10)-($('#topbar').height()+6))+'px');
+	$('#links').css('width', width/4-10+'px');
 	$('.bottom_opt').css('width', width/5+'px');
 }

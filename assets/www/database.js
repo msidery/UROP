@@ -1,7 +1,7 @@
-var db;
+var database;
 var sessionID;
 
-function initDB() {
+function initdatabase() {
 	/* Create the tables */
 	function createTables(tx) {
 		function dropTables() {
@@ -17,9 +17,9 @@ function initDB() {
 	function fail() {
 		alert('Failed to create tables!');
 	}
-    db = window.openDatabase("test", "1.0", "Test database", 100000);
-    db.transaction(createTables, fail, successCB);
-	//db.transaction(populateDB, errorCB, successCB);
+    database = window.openDatabase("test", "1.0", "Test database", 100000);
+    database.transaction(createTables, fail, successCB);
+	//database.transaction(populatedatabase, errorCB, successCB);
 }
 
 /*
@@ -34,7 +34,7 @@ function insertData(table, data) {
 	function fail(tx, err) {
 		alert('Failed to insert '+data+' into '+table+'!');
 	}
-	db.transaction(insert, fail, successCB);
+	database.transaction(insert, fail, successCB);
 }
 
 function selectData(sql, success, failtext) {
@@ -44,7 +44,7 @@ function selectData(sql, success, failtext) {
 		}
 		tx.executeSql(sql, [], success, fail);
 	}
-	db.transaction(select, errorCB, successCB);
+	database.transaction(select, errorCB, successCB);
 }
 
 /* Transaction error callback */
@@ -73,20 +73,20 @@ function getDate() {
 }
 
 function go() {
-    db.transaction(addDB, errorCB, successCB);
+    database.transaction(adddatabase, errorCB, successCB);
 }
 
-function addDB(tx) {
+function adddatabase(tx) {
 	var f = document.getElementById("fname").value;
 	var l = document.getElementById("lname").value;
 	tx.executeSql('INSERT INTO DEMO (id, data) VALUES ('+f+', "'+l+'")');
 }
 
-function readDB() {
-	db.transaction(queryDB, errorCBB);
+function readdatabase() {
+	database.transaction(querydatabase, errorCBB);
 }
 
-function queryDB(tx) {
+function querydatabase(tx) {
 	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCBB);
 }
 

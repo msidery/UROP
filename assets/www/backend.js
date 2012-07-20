@@ -1,78 +1,27 @@
 	var captureDevice;
-    var sql;
-    var id = 0;
-    
-    $("#database").listview('option', 'filterCalback', searchDB) 
-        
-    /** Called when phonegap javascript is loaded */
-    function initBackend() {
-        	
-   		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
-   		window.resolveLocalFileSystemURI("file:///mnt/sdcard", onResolveSuccess, fail);
-   		
-   		var element = document.getElementById('deviceProperties');
-        	
-    	element.innerHTML = '<ul data-role="listview"><li>Device Name: ' + device.name + '</li>' +
-        					'<li>Device Cordova: ' + device.cordova + '</li>' +
-        					'<li>Device Platforms: ' + device.platform + '</li>' +
-        					'<li>Device UUID: ' + device.uuid + '</li></ul>'; 
-     	
+	function initBackend() {
+		/* Get capture device object used to record, take pictures */
 		captureDevice = navigator.device.capture;
+		
+		/* set up database and populate it */
 		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-		db.transaction(populateDB, errorCB, successCB);
-		
-		
+		db.transaction(populateDB, errorCB, successCB);		
 	}
-	/* If filesystem is retrieved successfully */
-	function onFileSystemSuccess(fileSystem) {
-		console.log(fileSystem.name);
-		console.log(fileSystem.root.name);
-	}
-	
-	/* if something goes wrong while retrieving filesystem */
-	function fail(evt) {
-		console.log(evt.target.error.code);
-	}
-	
-	/* if the URI is resolved successfully create a directory reader to list the contents */
-	function onResolveSuccess(fileEntry) {
-		var directoryReader = fileEntry.createReader();
-		directoryReader.readEntries(onSuccessRead, onErrorRead);
-	}
-	
-	/* read the entries and update the html */
+
+
+	/* Success and error callback function for reading from sd card */
 	function onSuccessRead(entries) {
-		var str = "";
+		console.log("success reading entries in directory entry");
 		
-		for (var i = 0; i < entries.length; i++) {
-			if(entries[i].name == "recording-2031062751.3gpp") {
-				
-				entries[i].remove(
-					//success callback
-					function() {
-					console.log("Removal succeded");
-				}, 
-					//error callback
-					function () {
-					console.log("Removal failed");
-				});
-				
-			} else {
-				str = str + "<li>" + entries[i].name + "</li>";	
-			}
-				
-			
-		}
-		
-		$("#list").html(str)
+		//can do whatever here
+	
 	}
 	
-	/* error reading from folder */
 	function onErrorRead() {
 		console.log("error reading entries in directory entry");
 	}
 	
-	/* generate a timestamp for each file */
+	/* Get timestamp to apply to each recording */
 	function getTimestamp() {
 		var d, s = "";
 		var c = ":";
@@ -85,23 +34,25 @@
 		return s;
 	}
 	
-	/* initialize database */
+	/* Function to initialize database */
 	function populateDB(tx) {
 		tx.executeSql('DROP TABLE IF EXISTS Demo');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS Demo (id INTEGER PRIMARY KEY, timestamp, data, tags)');	
+		tx.executeSql('CREATE TABLE IF NOT EXISTS Demo (id INTEGER PRIMARY KEY, path, type, timestamp, uploaded, tags, linked)');	
 	}
 	
-	/* database error */
+	/* Success and error callback functions for database operations */
 	function errorCB(err) {
 		console.log("Error processing SQL: " + err.message);
 	}
 	
-	/* database transaction success */
 	function successCB() {
 		alert("success on database transaction");
 	}
 	
-	/* capture audio -- not working */
+	/* 
+	 * Functions used to capture sound, image and video 
+	 * They are triggered by the audio, video and image buttons
+	 */
 	function captureAudio() {
 		captureDevice.captureAudio(onAudioSuccess, onError, {limit: 1});
 	}
@@ -114,6 +65,10 @@
 		captureDevice.captureVideo(onVideoSuccess, onError, {limit: 1});
 	}
 	
+	/* 
+	 * Functions used to play audio, video and view images
+	 * They are triggered by selecting the items in the database search view 
+	 */
 	function playVideo( url ) {
 		window.plugins.videoPlayer.play(url);
 	}
@@ -133,42 +88,103 @@
 	}
 	
 	function showImage( url ) {
-
 		$("#picture").attr('src', url);
+		$('#commentwrapper').css('display', 'none');
+	}
+	
+	/* 
+	 * Success callbacks for video, audio and photo
+	 * If the recording was successful then the item is added to the database
+	 */
+	
+	function insertElement(path, type, timestamp, uploaded, tags, linked) {
+		
+		var sql = 'INSERT INTO Demo (path, type, timestamp, uploaded, tags, linked) VALUES (' 
+    									+ '"' + path + '"' + ','
+    									+ '"' + type + '"' + ','
+    									+ '"' + timestamp + '"' + ',' 
+    									+ uploaded + ',' 
+    									+ '"' + tags + '"' + ',' 
+    									+ linked + ')';
+		return sql; 
 	}
 	
 	function onVideoSuccess(mediaFiles) {
+		var type = "video";
 		var time = getTimestamp();
 		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
 		var i, path, len;
-    	
-    	var p1 = document.getElementById('videoPath');
    		
    		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
     		path = mediaFiles[i].fullPath;
-    		p1.innerHTML = path + '<br />';
-    		sql = 'INSERT INTO Demo (timestamp, data, tags) VALUES (' 
-    									+ '"' + time + '"' + ','
-    									+ '"' + path + '"' + ','+ '"video")';
+    		sql = insertElement(path, type, time, 0, null, 0);
+    		
+    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		
     		db.transaction(function(tx){
-    			
     					tx.executeSql(sql);
-    					
     		 				}, errorCB, successCB);    	
     	}
 	}
 	
-	function insert() {
+	function onPhotoSuccess(mediaFiles) {
+		var type = "photo";
+		var time = getTimestamp();
+		console.log(time);
+		var i, path, len;
+		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
+   		
+   		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
+    		path = mediaFiles[i].fullPath;
+    		sql = insertElement(path, type, time, 0, null, 0);
+    		
+    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		
+    		db.transaction(function(tx){
+    					tx.executeSql(sql);
+    		 				}, errorCB, successCB);
+    	}
+	}
+	
+	function onAudioSuccess(mediaFiles) {
+		var type = "audio";
+		var time = getTimestamp();
+		console.log(time);
+		var i, path, len;
+		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
+   		
+   		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
+    		path = mediaFiles[i].fullPath;
+    		sql = insertElement(path, type, time, 0, null, 0);
+    		
+    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		
+    		db.transaction(function(tx){
+    					tx.executeSql(sql);
+    		 				}, errorCB, successCB);
+    	} 
+	}
+	
+	/* 
+	 * Auxiliary function for adding information into the database
+	 */
+	/*function insert() {
 		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
 		
-		sql = 'INSERT INTO Demo (timestamp, data, tags) VALUES (1, "something", "something_else")';
+		sql = 'INSERT INTO Demo (timestamp, data, tags, uploaded) VALUES (1, "something", "something_else", 0)';
 		db.transaction(function(tx){
     			
     					tx.executeSql(sql);
     					
     		 				}, errorCB, successCB);
-	}
+	}*/
 	
+	/* 
+	 * Function for listing the contents of the database
+	 * The contents are listed as a searchable list
+	 * The search is done by the tag element, this function is triggered
+	 * if the Search Database button is pressed 
+	 */
 	function list_db() {
 		
 		var database = document.getElementById("database");
@@ -182,22 +198,22 @@
 							for(var i = 0; i < results.rows.length; i++) {
 								var item = results.rows.item(i);
 								
-								if(item.tags == "video") {
+								if(item.type == "video") {
 									htmlStr = htmlStr + 
-												"<li onclick=\"playVideo('"+item.data+"');\" " +
+												"<li onclick=\"playVideo('"+item.path+"');\" " +
 												'data-filtertext="'+item.tags+'">' + 
 												'<a href="#">';
 								}
-								else if(item.tags == "audio" ) {
+								else if(item.type == "audio" ) {
 									htmlStr = htmlStr + 
-												"<li onclick=\"playAudio('"+item.data+"');\" " +
+												"<li onclick=\"playAudio('"+item.path+"');\" " +
 												'data-filtertext="'+item.tags+'">' + 
 												'<a href="#">';
 								}
-								else if(item.tags == "photo" ) {
+								else if(item.type == "photo" ) {
 									console.log("added link and function to photo");
 									htmlStr = htmlStr + 
-												"<li onclick=\"showImage('"+item.data+"');\" " + 
+												"<li onclick=\"showImage('"+item.path+"');\" " + 
 												'data-filtertext="'+item.tags+'">' +
 												'<a href="#four">' ;
 								}
@@ -207,7 +223,7 @@
 								
 								htmlStr = htmlStr + '<p class="ui-li-aside"><strong>'+
 									item.timestamp+'</strong></p><h3>'+
-									item.data+'</h3><p><strong>'+
+									item.path+'</h3><p><strong>'+
 									item.id+'</strong></p><p>'+
 									item.tags+'</p></a></li>';
 													
@@ -220,60 +236,23 @@
 			}, errorCB, successCB);
 	}
 	
+	/* 
+	 * Function used to customize the behaviour of the search field of the list
+	 */
 	function searchDB(text, searchValue) {
 			return text.toLowerCase().indexOf(searchValue) == -1; 
 	};
 		
-	function onPhotoSuccess(mediaFiles) {
-		
-		var time = getTimestamp();
-		console.log(time);
-		var i, path, len;
-		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-    	
-    	var p2 = document.getElementById('imagePath');
-   		
-   		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
-    		path = mediaFiles[i].fullPath;
-    		p2.innerHTML = path + '<br />';
-    		sql = 'INSERT INTO Demo (timestamp, data, tags) VALUES (' 
-    									+ '"' + time  + '"' + ','
-    									+ '"' + path + '"' + ','+ '"photo")';
-    		db.transaction(function(tx){
-    			
-    					tx.executeSql(sql);
-    					
-    		 				}, errorCB, successCB);
-    	}
-	}
-	
-	function onAudioSuccess(mediaFiles) {
-		var time = getTimestamp();
-		console.log(time);
-		var i, path, len;
-		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-    	
-    	var p2 = document.getElementById('imagePath');
-   		
-   		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
-    		path = mediaFiles[i].fullPath;
-    		p2.innerHTML = path + '<br />';
-    		sql = 'INSERT INTO Demo (timestamp, data, tags) VALUES (' 
-    									+ '"' + time  + '"' + ','
-    									+ '"' + path + '"' + ','+ '"audio")';
-    		db.transaction(function(tx){
-    			
-    					tx.executeSql(sql);
-    					
-    		 				}, errorCB, successCB);
-    	} 
-	}
-	
 	function onError(error) {
     	alert('code: ' + error.code + '\n'
   		+ 'message: ' + error.message + '\n');
 	}
-	
+
+	/* 
+	 * Used to upload files to the remote server. 
+	 * Selects all elements in the database and uploads them onto the server
+	 * Needs to be modified to only upload those that have to be uploaded
+	 */	
 	function uploadFiles() {
 		
 		//open database
@@ -285,19 +264,20 @@
 		db.transaction(
 			//function sql statements
 			function(tx){
-				tx.executeSql('SELECT * FROM Demo', [], 
+				tx.executeSql('SELECT * FROM Demo WHERE uploaded=0', [], 
 						function(tx, results) {
 							for(var i = 0; i < results.rows.length; i++) {
+								
 								var item = results.rows.item(i);
 								
-								if(item.tags == "video") {
-									uploadVideo(item.data, options, ft);
+								if(item.type == "video") {
+									uploadVideo(item.path, options, ft);
 								}
-								else if(item.tags == "audio" ) {
-									uploadAudio(item.data, options, ft);
+								else if(item.type == "audio" ) {
+									uploadAudio(item.path, options, ft);
 								}
-								else if(item.tags == "photo" ) {
-									uploadPhoto(item.data, options, ft);
+								else if(item.type == "photo" ) {
+									uploadPhoto(item.path, options, ft);
 								}
 								else {
 									console.log("nothing to upload");
@@ -307,15 +287,20 @@
 			}, errorCB, successCB);
 	}
 	
+	/*
+	 * Customized function for uploading video, audio and photo 
+	 * to the remote server
+	 */
 	function uploadVideo(path, options, transfer) {
-		options.fileName = "video";
+		options.fileName = path.substr(path.lastIndexOf('/')+1);
 		options.mimeType = "video/mpeg";
+		options.chunkedMode = "false";
 		
 		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
 	function uploadAudio(path, options, transfer) {
-		options.fileName = "audio";
+		options.fileName = path.substr(path.lastIndexOf('/')+1);
 	
 		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
 	}
@@ -328,6 +313,9 @@
 		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
+	/*
+	 * Success and error callback functions for the file upload
+	 */
 	function uploadSuccess(r) {
 		console.log("Code = " + r.responseCode);
 		console.log("Respons = " + r.response);
@@ -338,4 +326,64 @@
 		console.log("An error has occurred: Code = " + error.code);
 		console.log("upload error source " + error.source);
 		console.log("upload error target " + error.target)
+	}
+	
+	function see_recent() {
+		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
+		var time = getTimestamp();
+
+		db.transaction(
+			//function sql statements
+			function(tx){
+				tx.executeSql('SELECT * FROM Demo WHERE linked<>1', [], 
+						function(tx, results) {
+							var htmlStr = "";
+							for(var i = 0; i < results.rows.length; i++) {
+								var item = results.rows.item(i);
+								
+								
+								htmlStr = htmlStr + 
+												"<li onclick=\"link_element('"+item.id+"');\" " +
+												'data-filtertext="'+item.tags+'">' + 
+												'<a href="#">';
+								
+								htmlStr = htmlStr + '<p class="ui-li-aside"><strong>'+
+									item.timestamp+'</strong></p><h3>'+
+									item.path+'</h3><p><strong>'+
+									item.id+'</strong></p><p>'+
+									item.tags+'</p></a></li>';
+													
+							}
+							
+							$("#recent_list").html(htmlStr);
+							$("#recent_list").listview('refresh');									
+																					
+						}, errorCB);
+			}, errorCB, successCB);
+	}
+	
+	function link_element(id, tags) {
+		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
+		
+		db.transaction(
+			//function sql statements
+			function(tx){
+				//need to set tags here as well
+				tx.executeSql('UPDATE Demo SET linked=1 WHERE id=' + id);
+				console.log("set linked to 1 for" + id);
+				
+			}, errorCB, successCB);
+			
+		//generate new tag
+		if(tags != null) {
+			var newtags = tags + "newtag";
+		} else {
+			var newtags = "newtag ";
+		}
+		
+		db.transaction(
+			function(tx) {
+				tx.executeSql('UPDATE Demo SET tags="' + newtags + '" WHERE id=' + id);
+				console.log("updated tags for" + id);
+			}, errorCB, successCB);
 	}
