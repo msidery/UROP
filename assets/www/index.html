@@ -1,18 +1,19 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Cordova</title>
+<title>PhoneGapTest</title>
 <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
 <script type="text/javascript" charset="utf-8" src="database.js"></script>
-<script type="text/javascript" charset="utf-8" src="ui.js"></script>
+<script type="text/javascript" charset="utf-8" src="home.js"></script>
+<script type="text/javascript" charset="utf-8" src="comment.js"></script>
 <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
 <script src="jquery-1.7.2.min.js"></script>
 <script src="jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 
 	/** Add device ready event that will be triggered when library is loaded */
-   	//document.addEventListener("deviceready", onDeviceReady, false);
-
+	//document.addEventListener("deviceready", onDeviceReady, true);
+    
     window.orientationchange = function() {
     	turn(window.orientation);
     }
@@ -39,18 +40,20 @@
     // Cordova is ready
     //
     //function onDeviceReady() {
-    window.onload = function() {
-		//initDB();
+	window.onload = function() {
+		initDB();
 		//initBackend();
-		//initUI();
-		$('#enter').bind('click', function() {
-			initUI();
-		});
+		initHomeUI();
+		initCommentUI();
+		showHomeUI();
+		$('.wrapper').css('width', width+'px');
+		$('.wrapper').css('height', height+'px');
     }
 </script>
 
 </head>
 <body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
-	<a id="enter" data-inline="true" data-role="button" data-theme="c" >GO</a>
+	<div id="homewrapper" class="wrapper" ></div>
+	<div id="commentwrapper" class="wrapper" ></div>
 </body>
 </html>

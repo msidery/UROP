@@ -1,5 +1,5 @@
 var width = window.innerWidth;
-var height = window.innerHeight;
+var height = window.innerHeight-2;
 
 var numtabs = 4;
 
@@ -13,18 +13,39 @@ var xmove; // top level tab
 var ymove; // second level tabs
 var zmove; // third level tabs
 
+var sessionData;
+
+function showCommentUI(data) {
+	sessionData = data;
+	var dbData = new Array();
+	dbData[0] = data[0];
+	for (var i = 1; i < data.length; i++)
+		dbData[i] = '"'+data[i]+'"';
+	insertData('session', dbData);
+	$('.wrapper').css('display', 'none');
+	$('#commentwrapper').css('display', 'block');
+	$('#sessiontitle').text('Session: ' + sessionData);
+}
+
 /* setup the user interface */
-function initUI() {
+function initCommentUI() {
 	addOptions();
 	createTabs();
-	addBindings();
+	addCommentBindings();
 	initDisplay();
 	setupDimensions();
 }
 
+/* replace contents of the body of the page with a new UI */
 function addOptions() {
+	var top = '<div id="topbar" class="ui-body ui-body-a" width="'+width+'">';
+	top += '<a id="back" data-role="button" data-inline="true" data-icon="arrow-l" data-mini="true" >back</a>';
+	top += '<span id="sessiontitle"></span>';
+	top += '</div>';
 	var body = '<div id="tabs">';
 	body += '</div>';
+	// adds a textarea and buttons at the bottom of the page
+	// for accepting the input and interacting with the camera
 	body += '<div>';
 	body += '<textarea id="text" rows="8" cols="30" placeholder="Extra comments" ></textarea>';
 	body += '</div>';
@@ -35,7 +56,7 @@ function addOptions() {
 	body += '<a id="audio" class="bottom_opt" href="" data-inline="true" data-role="button" data-theme="a" >Audio</a>';
 	body += '<a id="cancel" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >CANCEL</a>';
 	body += '</div>';
-	$('body').html(body).trigger('create');
+	$('#commentwrapper').html(top+body).trigger('create');
 }
 
 /* create and add all the tabs to the ui from an xml file.
@@ -181,7 +202,7 @@ function createTabs() {
 }
 
 /* Add bindings for button clicks and swipes */
-function addBindings(level) {
+function addCommentBindings(level) {
 	// click action for tab buttons
 	$('.controlgroup .opt').bind('click', function() {
 		var num = $(this).attr('id').substring(3);
@@ -263,13 +284,40 @@ function addBindings(level) {
 		$(this).animate({ marginLeft: move*width }, slideSpeed, function () {});
 	});
 	
-	$('#enter').bind('click', function() {
-		// add stuff to the DB
-		resetEntries();
-	});
+	/*$('#enter').bind('click', function() {
+		alert('SELECT * FROM comment WHERE sessionID='+sessionData[0]+' ORDER BY commentID DESC');
+		selectData('SELECT * FROM comment WHERE sessionID='+sessionData[0]+' ORDER BY commentID DESC',
+			function(tx, results) {
+				var data = new Array(); // sid,cid,time,cat1,cat2,comment
+				data[0] = sessionData[0];
+				
+				if (results.rows.length == 0)
+					data[1] = 0;
+				else
+					data[1] = results.rows.item(0).commentID + 1;
+				
+				data[2] = '"'+getTimestamp()+'"';
+				
+				var btn1 = $('#control ui-btn-down-b').attr('id').substring(3);
+				var btn2 = $('#control'+btn1).attr('id').split('-')[1];
+				data[3] = '"'+btn1+'"';
+				data[4] = '"'+btn2+'"';
+				data[5] = '"'+$('#text').val()+'"';
+				alert('comment' + data);
+				insertData('comment', data);
+				// add stuff to the DB
+				resetEntries();
+			},
+			'Failed to get a comment ID!'
+		)
+	});*/
 	
 	$('#cancel').bind('click', function() {
 		resetEntries();
+	});
+	
+	$('#back').bind('click', function() {
+		showHomeUI();
 	});
 }
 
@@ -277,9 +325,10 @@ function addBindings(level) {
 function initDisplay() {
 	// hide all tab groups
 	$('.sub').css('display', 'none');
-	// show the first of each tab group
-	$('.initbtn').addClass('ui-btn-down-b');
+	// show the first sub group of each tab group
 	$('.initsub').css('display', 'block');
+	// highlight the first button of the top and second level tab groups
+	$('.initbtn').addClass('ui-btn-down-b');
 }
 
 // remove highlights from all third level buttons and reset the text box
@@ -296,6 +345,9 @@ function setupDimensions() {
 	$('.controlgroup').css('width', numtabs*width+'px');
 	$('.controlgroup').css('margin-top', '1px');
 	$('.controlgroup').css('margin-bottom', '2px');
-	$('#text').css('height', (height-4*($('#enter').height()+10))+'px');
+	$('#topbar').height($('#back').height());
+	$('#topbar').css('padding', 'auto auto auto 10px');
+	$('#back').css('margin', 'auto 10px auto');
+	$('#text').css('height', (height-4*($('#enter').height()+10)-($('#topbar').height()+6))+'px');
 	$('.bottom_opt').css('width', width/5+'px');
 }

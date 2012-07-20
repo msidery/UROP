@@ -1,8 +1,24 @@
 var db;
+var sessionID;
 
 function initDB() {
+	/* Create the tables */
+	function createTables(tx) {
+		function dropTables() {
+			tx.executeSql('DROP TABLE IF EXISTS session');
+			tx.executeSql('DROP TABLE IF EXISTS comment');
+			tx.executeSql('DROP TABLE IF EXISTS tag');
+		}
+		dropTables();
+		tx.executeSql('CREATE TABLE IF NOT EXISTS session (sessionID unique, date, fname, lname, subject, module)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS comment (sessionID, commentID, timestamp, cat1, cat2, comment)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS tag (sessionID, commentID, timestamp, tag)');
+	}
+	function fail() {
+		alert('Failed to create tables!');
+	}
     db = window.openDatabase("test", "1.0", "Test database", 100000);
-    db.transaction(createTables, errorCB, successCB);
+    db.transaction(createTables, fail, successCB);
 	//db.transaction(populateDB, errorCB, successCB);
 }
 
@@ -10,18 +26,25 @@ function initDB() {
  * sessionID timestamp comment ---1-----N--- sessionID timestamp tag
  * 
  */
-
-/* Create the tables */
-function createTables(tx) {
-	function dropTables() {
-		tx.executeSql('DROP TABLE IF EXISTS Session');
-		tx.executeSql('DROP TABLE IF EXISTS Comments');
-		tx.executeSql('DROP TABLE IF EXISTS Tags');
+/* Insert data into the given table using all columns */
+function insertData(table, data) {
+	function insert(tx) {
+		tx.executeSql('INSERT INTO '+table+' VALUES ('+data+')');
 	}
-	//dropTables();
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Session (sessionID unique, fname, lname, date, subject, module)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Comments (sessionID, timestamp, comment)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS Tags (sessionID, timestamp, tag)');
+	function fail(tx, err) {
+		alert('Failed to insert '+data+' into '+table+'!');
+	}
+	db.transaction(insert, fail, successCB);
+}
+
+function selectData(sql, success, failtext) {
+	function select(tx) {
+		function fail(err) {
+			alert(failtext);
+		}
+		tx.executeSql(sql, [], success, fail);
+	}
+	db.transaction(select, errorCB, successCB);
 }
 
 /* Transaction error callback */
@@ -36,6 +59,17 @@ function errorCBB(err) {
 /* Transaction success callback */
 function successCB() {
 	//alert("success!");
+}
+
+/* generate the date */
+function getDate() {
+	var d, s = "";
+	var c = "/";
+	d = new Date();
+	s += d.getDate() + c;
+	s += (d.getMonth()+1) + c;
+	s += d.getFullYear();
+	return s;
 }
 
 function go() {
