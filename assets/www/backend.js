@@ -1,8 +1,12 @@
+	var files;
+	
 	var captureDevice;
 	function initBackend() {
+	
+		
 		/* Get capture device object used to record, take pictures */
 		captureDevice = navigator.device.capture;
-		
+		files = new Array();
 		/* set up database and populate it */
 		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
 		db.transaction(populateDB, errorCB, successCB);		
@@ -120,6 +124,7 @@
     		sql = insertElement(path, type, time, 0, null, 0);
     		
     		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Video</a>').trigger('create');
+    		files[files.length] = path;
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
@@ -139,6 +144,7 @@
     		sql = insertElement(path, type, time, 0, null, 0);
     		
     		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
+    		files[files.length] = path;
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
@@ -158,6 +164,7 @@
     		sql = insertElement(path, type, time, 0, null, 0);
     		
     		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Audio</a>').trigger('create');
+    		files[files.lenght] = path;
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
