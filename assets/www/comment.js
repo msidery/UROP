@@ -343,6 +343,11 @@ function addCommentBindings(level) {
 	});
 }
 
+function deleteFromCommentUI(src) {
+	$("#links").remove('#'+src+'"');
+	alert("removing link with id " + src);
+}
+
 /* hide all tab groups apart from the first of each sub group */
 function initDisplay() {
 	// hide all tab groups

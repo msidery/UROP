@@ -1,6 +1,6 @@
 	var files;
-	
 	var captureDevice;
+	
 	function initBackend() {
 	
 		
@@ -143,7 +143,7 @@
     		path = mediaFiles[i].fullPath;
     		sql = insertElement(path, type, time, 0, null, 0);
     		
-    		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
+    		$('#links').append('<a id="' +path+ '" data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
     		files[files.length] = path;
     		
     		db.transaction(function(tx){
