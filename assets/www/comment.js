@@ -50,7 +50,7 @@ function addOptions() {
 	// for accepting the input and interacting with the camera
 	body += '<div>';
 	body += '<textarea id="text" rows="8" cols="30" placeholder="Extra comments" style="float:left;" ></textarea>';
-	body += '<div id="links" style="border:1px solid #CCCCCC;float:right;" ></div>';
+	body += '<div id="links" data-role="controlgroup" style="border:1px solid #CCCCCC;float:right;" ></div>';
 	body += '</div>';
 	body += '<div id="camera" data-role="controlgroup" data-type="horizontal" width="'+width+'" style="clear:both;">';
 	body += '<a id="enter" class="bottom_opt" data-inline="true" data-role="button" data-theme="c" >ENTER</a>';

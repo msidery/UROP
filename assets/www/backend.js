@@ -119,7 +119,7 @@
     		path = mediaFiles[i].fullPath;
     		sql = insertElement(path, type, time, 0, null, 0);
     		
-    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Video</a>').trigger('create');
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
@@ -138,7 +138,7 @@
     		path = mediaFiles[i].fullPath;
     		sql = insertElement(path, type, time, 0, null, 0);
     		
-    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
@@ -157,7 +157,7 @@
     		path = mediaFiles[i].fullPath;
     		sql = insertElement(path, type, time, 0, null, 0);
     		
-    		$('#links').append('<a onclick="showViewUI(\''+path+'\')">'+path+'</a>').trigger('create');
+    		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Audio</a>').trigger('create');
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
