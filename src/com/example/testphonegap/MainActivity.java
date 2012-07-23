@@ -16,12 +16,5 @@ public class MainActivity extends DroidGap {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN | 
                 WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-
-    
+   
 }
