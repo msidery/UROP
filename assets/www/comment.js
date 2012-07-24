@@ -294,6 +294,8 @@ function addCommentBindings(level) {
 		selectData('SELECT * FROM comment WHERE sessionID='+sessionData[0]+' ORDER BY commentID DESC',
 			function(tx, results) {
 				var data = new Array(); // sid,cid,time,cat1,cat2,comment
+				var files_data = new Array();
+					
 				data[0] = sessionData[0];
 
 				if (results.rows.length == 0)
@@ -308,13 +310,31 @@ function addCommentBindings(level) {
 				data[3] = '"'+btn1+'"';
 				data[4] = '"'+btn2+'"';
 				data[5] = '"'+$('#text').val()+'"';
+				
 				insertData('comment', data);
 				
 				var tags = $.makeArray($('#control'+btn1+'-'+btn2+' .ui-btn-down-b'));
 				for (var i = 0; i < tags.length; i++) {
 					insertData('tag', [sessionData[0], data[1], '"'+tags[i].text+'"']);
 				}
-				// add stuff to the DB
+
+				if(files.length > 0) {
+					for(var i = 0; i < files.length; i++) {
+						files_data[0] = sessionData[0];
+						files_data[1] = data[1];
+						files_data[2] = files[i];
+						
+						//check the extension to see where to insert
+						var ext = files[i].substr(files[i].lastIndexOf('.') +1);
+						if(ext == 'mp4')
+							insertData('video', files_data);
+						else if(ext == 'jpg')
+							insertData('photo', files_data);
+						else if(ext == '3gp')
+							insertData('audio', files_data); 
+					}
+				}
+				
 				resetEntries();
 			},
 			'Failed to get a comment ID!'
@@ -328,6 +348,11 @@ function addCommentBindings(level) {
 	$('#back').bind('click', function() {
 		showHomeUI();
 	});
+}
+
+function deleteFromCommentUI(src) {
+	$("#links").remove('#'+src+'"');
+	alert("removing link with id " + src);
 }
 
 /* hide all tab groups apart from the first of each sub group */
