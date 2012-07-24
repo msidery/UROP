@@ -142,8 +142,10 @@
    		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
     		path = mediaFiles[i].fullPath;
     		sql = insertElement(path, type, time, 0, null, 0);
-    		
-    		$('#links').append('<a id="' +path+ '" data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
+    		var id = mediaFiles[i].name.split('.');
+    		id[0] = "a" + id[0];
+    		console.log("id : " + id[0]);
+    		$('#links').append('<a id="' +id[0]+ '" data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Photo</a>').trigger('create');
     		files[files.length] = path;
     		
     		db.transaction(function(tx){

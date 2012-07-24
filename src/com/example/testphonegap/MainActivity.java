@@ -15,6 +15,7 @@ public class MainActivity extends DroidGap {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                 WindowManager.LayoutParams.FLAG_FULLSCREEN | 
                 WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        
     }
     
     @Override

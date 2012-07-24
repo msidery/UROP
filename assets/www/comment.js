@@ -351,8 +351,12 @@ function addCommentBindings(level) {
 }
 
 function deleteFromCommentUI(src) {
-	$("#links").remove('#'+src+'"');
-	alert("removing link with id " + src);
+	var name = src.substring(src.lastIndexOf('/')+1);
+	var id = name.split('.');
+	id[0] = "a" + id[0];
+	console.log(id[0]);
+	$('#' + id[0]).remove();
+	//alert("removing link with id " + id[0]);
 }
 
 /* hide all tab groups apart from the first of each sub group */

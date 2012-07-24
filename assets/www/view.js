@@ -13,7 +13,7 @@ function initViewUI() {
 				//alert("success!" + src);
 				fileEntry.remove( function(entry) {
 									//alert("removal of successfull");
-									$("picture").attr('src', "");
+									$("picture").attr('src', '').trigger('refresh');
 									deleteFromCommentUI(src);
 									showCommentUI();								
 								}, 
