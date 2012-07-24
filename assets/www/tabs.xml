@@ -1,10 +1,10 @@
 <TABS>
-	<LEVEL0>Comment
-	    <LEVEL1>Volume
+	<LEVEL0><TAG>Comment</TAG>
+	    <LEVEL1><TAG>Volume</TAG>
 	        <LEVEL2>too quiet</LEVEL2>
 	        <LEVEL2>fluctuating</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>Content
+	    <LEVEL1><TAG>Content</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	        <LEVEL2>too much</LEVEL2>
@@ -12,7 +12,7 @@
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>another
+	    <LEVEL1><TAG>another</TAG>
 	        <LEVEL2>something</LEVEL2>
 	        <LEVEL2>else</LEVEL2>
 	        <LEVEL2>something</LEVEL2>
@@ -24,74 +24,74 @@
 	        <LEVEL2>something</LEVEL2>
 	        <LEVEL2>else</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>others
+	    <LEVEL1><TAG>others</TAG>
 	        <LEVEL2>stuff</LEVEL2>
 	        <LEVEL2>things</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>more
+	    <LEVEL1><TAG>more</TAG>
 	        <LEVEL2>too quiet</LEVEL2>
 	        <LEVEL2>fluctuating</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>and
+	    <LEVEL1><TAG>and</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	        <LEVEL2>something</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>more
+	    <LEVEL1><TAG>more</TAG>
 	        <LEVEL2>something</LEVEL2>
 	        <LEVEL2>else</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>categories
+	    <LEVEL1><TAG>categories</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	    </LEVEL1>
 	</LEVEL0>
-	<LEVEL0>Slides
-	    <LEVEL1>Content
+	<LEVEL0><TAG>Slides</TAG>
+	    <LEVEL1><TAG>Content</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>something
+	    <LEVEL1><TAG>something</TAG>
 	        <LEVEL2>asduhk</LEVEL2>
 	        <LEVEL2>hello</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>ummm
+	    <LEVEL1><TAG>ummm</TAG>
 	        <LEVEL2>hmm</LEVEL2>
 	        <LEVEL2>more</LEVEL2>
 	    </LEVEL1>
 	</LEVEL0>
-	<LEVEL0>Category3
-	    <LEVEL1>Type1
+	<LEVEL0><TAG>Category3</TAG>
+	    <LEVEL1><TAG>Type1</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>Type2
+	    <LEVEL1><TAG>Type2</TAG>
 	        <LEVEL2>asduhk</LEVEL2>
 	        <LEVEL2>hello</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>Type3
+	    <LEVEL1><TAG>Type3</TAG>
 	        <LEVEL2>hmm</LEVEL2>
 	        <LEVEL2>more</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>Type4
+	    <LEVEL1><TAG>Type4</TAG>
 	        <LEVEL2>asdugf</LEVEL2>
 	        <LEVEL2>sdfsu</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>Type5
+	    <LEVEL1><TAG>Type5</TAG>
 	        <LEVEL2>qwej</LEVEL2>
 	        <LEVEL2>asdfsd</LEVEL2>
 	    </LEVEL1>
 	</LEVEL0>
-	<LEVEL0>Category4
-	    <LEVEL1>Content
+	<LEVEL0><TAG>Category4</TAG>
+	    <LEVEL1><TAG>Content</TAG>
 	        <LEVEL2>too much</LEVEL2>
 	        <LEVEL2>too little</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>something
+	    <LEVEL1><TAG>something</TAG>
 	        <LEVEL2>asduhk</LEVEL2>
 	        <LEVEL2>hello</LEVEL2>
 	    </LEVEL1>
-	    <LEVEL1>ummm
+	    <LEVEL1><TAG>ummm</TAG>
 	        <LEVEL2>hmm</LEVEL2>
 	        <LEVEL2>more</LEVEL2>
 	    </LEVEL1>

@@ -148,7 +148,7 @@ function createTabs() {
 		// add a right arrow icon if there are more buttons right of this one
 		else if (i%numtabs == 3 && i != x.length-1)
 			xhtml += ' data-icon="arrow-r" data-iconpos="right"';
-		xhtml += '>' + x[i].childNodes[0].nodeValue + '</a>\n';
+		xhtml += '>' + x[i].getElementsByTagName('TAG')[0].childNodes[0].nodeValue + '</a>\n';
 		var zhtml = new Array();
 		yhtml[i] = '<div id="subtab'+i+'" class="subtab sub';
 		if (i == 0)
@@ -170,7 +170,7 @@ function createTabs() {
 				yhtml[i] += ' data-icon="arrow-l"';
 			else if (j%numtabs == 3 && j != y.length-1)
 				yhtml[i] += ' data-icon="arrow-r" data-iconpos="right"';
-			yhtml[i] += '>' + y[j].childNodes[0].nodeValue + '</a>\n';
+			yhtml[i] += '>' + y[j].getElementsByTagName('TAG')[0].childNodes[0].nodeValue + '</a>\n';
 			
 			zhtml[j] = '<div id="subtab'+i+'-'+j+'" class="subtab'+i+' sub';
 			if (j == 0)
