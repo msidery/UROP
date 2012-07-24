@@ -8,6 +8,7 @@
 <script type="text/javascript" charset="utf-8" src="home.js"></script>
 <script type="text/javascript" charset="utf-8" src="comment.js"></script>
 <script type="text/javascript" charset="utf-8" src="view.js"></script>
+<script type="text/javascript" charset="utf-8" src="listcomments.js"></script>
 <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
 <script src="jquery-1.7.2.min.js"></script>
 <script src="jquery.mobile-1.1.0.min.js"></script>
@@ -48,16 +49,19 @@
 		initHomeUI();
 		initCommentUI();
 		initViewUI();
+		//initListCommentsUI();
 		showHomeUI();
+		//showListCommentsUI(0);
 		$('.wrapper').css('width', width+'px');
 		$('.wrapper').css('height', height+'px');
     }
 </script>
 
 </head>
-<body style="margin:0px;padding:0px;background:#FFFFFF;" ontouchmove="touchmove(event)">
-	<div id="homewrapper" class="wrapper" ></div>
-	<div id="commentwrapper" class="wrapper" ></div>
-	<div id="viewwrapper" class="wrapper" ></div>
+<body style="margin:0px;padding:0px;background:#FFFFFF;">
+	<div id="homewrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div id="commentwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div id="viewwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div id="listwrapper" class="wrapper" ></div>
 </body>
 </html>

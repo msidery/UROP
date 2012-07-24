@@ -228,8 +228,11 @@ function addCommentBindings(level) {
 		}
 		// third level buttons
 		else {
-			$(this).addClass('ui-btn-down-b');
-			$('#text').text(document.getElementById('text').value+';'+$(this).text());
+			if ($(this).hasClass('ui-btn-down-b'))
+				$(this).removeClass('ui-btn-down-b');
+			else
+				$(this).addClass('ui-btn-down-b');
+			// $('#text').text(document.getElementById('text').value+';'+$(this).text());
 		}
 	});
 	
@@ -306,6 +309,11 @@ function addCommentBindings(level) {
 				data[4] = '"'+btn2+'"';
 				data[5] = '"'+$('#text').val()+'"';
 				insertData('comment', data);
+				
+				var tags = $.makeArray($('#control'+btn1+'-'+btn2+' .ui-btn-down-b'));
+				for (var i = 0; i < tags.length; i++) {
+					insertData('tag', [sessionData[0], data[1], '"'+tags[i].text+'"']);
+				}
 				// add stuff to the DB
 				resetEntries();
 			},

@@ -12,7 +12,10 @@ function initdatabase() {
 		dropTables();
 		tx.executeSql('CREATE TABLE IF NOT EXISTS session (sessionID unique, date, fname, lname, subject, module)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS comment (sessionID, commentID, timestamp, cat1, cat2, comment)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS tag (sessionID, commentID, timestamp, tag)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS tag (sessionID, commentID, tag)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS photo (sessionID, commentID, file)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS video (sessionID, commentID, file)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS audio (sessionID, commentID, file)');
 	}
 	function fail() {
 		alert('Failed to create tables!');
@@ -29,6 +32,7 @@ function initdatabase() {
 /* Insert data into the given table using all columns */
 function insertData(table, data) {
 	function insert(tx) {
+		console.log(table+': '+data);
 		tx.executeSql('INSERT INTO '+table+' VALUES ('+data+')');
 	}
 	function fail(tx, err) {

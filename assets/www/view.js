@@ -7,7 +7,7 @@ function initViewUI() {
 	$('#viewwrapper').html(body).trigger('create');
 	
 	$('#delete').bind('click', function() {
-		
+		deletePhoto($('#picture').attr('src'));
 	});
 	
 	$('#viewback').bind('click', function() {

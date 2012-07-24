@@ -16,7 +16,13 @@ function setupHomeUI () {
 	form += '<input id="module" type="text" placeholder="Module" />';
 	form += '<input id="start" type="submit" data-inline="true" value="Start Session" data-role="button" data-theme="c" >';
 	form += '</form>';
+	form += '<textarea id="sessiontext"></textarea>';
+	form += '<a id="listsession" data-role="button" >List</a>';
 	$('#homewrapper').html(form).trigger('create');
+	
+	$('#listsession').bind('click', function() {
+		showListCommentsUI(document.getElementById('sessiontext').value);
+	});
 }
 
 function gotoCommentUI() {
