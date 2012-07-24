@@ -6,3 +6,5 @@ ic_launcher-web.png
 AndroidManifest.xml
 .classpath
 .project
+res/values-v11
+res/values-v14

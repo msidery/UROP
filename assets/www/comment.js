@@ -377,6 +377,7 @@ function initDisplay() {
 function resetEntries() {
 	$('.sub .sub .sub .ui-btn-down-b').removeClass('ui-btn-down-b');
 	$('#text').text('');
+	$('#links').html('');
 }
 
 // setup the UI sizes and spacing
