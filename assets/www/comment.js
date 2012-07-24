@@ -315,14 +315,18 @@ function addCommentBindings(level) {
 				
 				var tags = $.makeArray($('#control'+btn1+'-'+btn2+' .ui-btn-down-b'));
 				for (var i = 0; i < tags.length; i++) {
-					insertData('tag', [sessionData[0], data[1], '"'+tags[i].text+'"']);
+					var tagData = new Array();
+					tagData[0] = sessionData[0];
+					tagData[1] = data[1];
+					tagData[2] = '"'+tags[i].text.substring(0,tags[i].text.length-1)+'"';
+					insertData('tag', tagData);
 				}
 
 				if(files.length > 0) {
 					for(var i = 0; i < files.length; i++) {
 						files_data[0] = sessionData[0];
 						files_data[1] = data[1];
-						files_data[2] = files[i];
+						files_data[2] = '"'+files[i]+'"';
 						
 						//check the extension to see where to insert
 						var ext = files[i].substr(files[i].lastIndexOf('.') +1);
@@ -351,12 +355,8 @@ function addCommentBindings(level) {
 }
 
 function deleteFromCommentUI(src) {
-	var name = src.substring(src.lastIndexOf('/')+1);
-	var id = name.split('.');
-	id[0] = "a" + id[0];
-	console.log(id[0]);
-	$('#' + id[0]).remove();
-	//alert("removing link with id " + id[0]);
+	$("#links ").remove("#"+src);
+	alert("removing link with id " + src);
 }
 
 /* hide all tab groups apart from the first of each sub group */

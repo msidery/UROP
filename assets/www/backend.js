@@ -166,7 +166,7 @@
     		sql = insertElement(path, type, time, 0, null, 0);
     		
     		$('#links').append('<a data-role="button" data-theme="a" data-mini="true" onclick="showViewUI(\''+path+'\')">Audio</a>').trigger('create');
-    		files[files.lenght] = path;
+    		files[files.length] = path;
     		
     		db.transaction(function(tx){
     					tx.executeSql(sql);
