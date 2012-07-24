@@ -1,0 +1,41 @@
+<TABS>
+	<LEVEL0>
+	    <TAG>First</TAG>
+	    <LEVEL1>
+	        <TAG>Type 1</TAG>
+	        <LEVEL2>Tag1</LEVEL2>
+	        <LEVEL2>Tag2</LEVEL2>
+	        <LEVEL2>Tag3</LEVEL2>
+	        <LEVEL2>Tag4</LEVEL2>
+	        <LEVEL2>Tag5</LEVEL2>
+	        <LEVEL2>Tag6</LEVEL2>
+	        <LEVEL2>Tag7</LEVEL2>
+	    </LEVEL1>
+	    <LEVEL1>
+	        <TAG>Type 2</TAG>
+	        <LEVEL2>Button1</LEVEL2>
+	        <LEVEL2>Button2</LEVEL2>
+	        <LEVEL2>Button3</LEVEL2>
+	        <LEVEL2>Button4</LEVEL2>
+	    </LEVEL1>
+	    <LEVEL1>
+	        <TAG>Type 3</TAG>
+	        <LEVEL2>Click1</LEVEL2>
+	        <LEVEL2>Click2</LEVEL2>
+	    </LEVEL1>
+	</LEVEL0>
+	<LEVEL0>
+	    <TAG>Second</TAG>
+	    <LEVEL1>
+	        <TAG>Cat 1</TAG>
+	        <LEVEL2>Option1</LEVEL2>
+	        <LEVEL2>Option2</LEVEL2>
+	        <LEVEL2>Option3</LEVEL2>
+	    </LEVEL1>
+	    <LEVEL1>
+	        <TAG>Cat 2</TAG>
+	        <LEVEL2>Choice1</LEVEL2>
+	        <LEVEL2>Choice2</LEVEL2>
+	    </LEVEL1>
+	</LEVEL0>
+</TABS>
