@@ -9,15 +9,37 @@ function initHomeUI () {
 }
 
 function setupHomeUI () {
-	var form = '<form action="javascript:gotoCommentUI()" >';
-	form += '<input id="fname" type="text" placeholder="Observer Name" />';
-	form += '<input id="lname" type="text" placeholder="Observee Name" />';
-	form += '<input id="subject" type="text" placeholder="Year" />';
-	form += '<input id="module" type="text" placeholder="Title" />';
-	form += '<input id="start" type="submit" data-inline="true" value="Start Session" data-role="button" data-theme="c" >';
+	var form = '<form action="javascript:gotoCommentUI()" method="post" enctype="multipart/form-data">';
+	form += '<input id="fname" name="fname" type="text" placeholder="Observer Name" />';
+	form += '<input id="lname" name="lname" type="text" placeholder="Observee Name" />';
+	form += '<input id="subject" name="subject" type="text" placeholder="Year" />';
+	form += '<input id="module" name="module" type="text" placeholder="Title" />';
+	form += '<input id="start" name="start" type="submit" data-inline="true" value="Start Session" data-role="button" data-theme="c" >';
 	form += '</form>';
 	form += '<textarea id="sessiontext"></textarea>';
 	form += '<a id="listsession" data-role="button" >List</a>';
+	//bind function to submit event for home screen form
+	
+	console.log($.support.cors);
+	$('form').live('submit', function () {
+		var postData = $(this).serialize();
+			
+		$.ajax({
+			type: 'POST',
+			data: postData,
+			url: 'http://146.169.25.82/urop/upload_form.php',
+			success: function(data) {
+				console.log(data);
+				alert('Your info was successfully added!')
+			},
+			error: function() {
+				console.log(data);
+				alert('There was an error addding your info!');
+		}
+		});
+	});
+
+	
 	$('#homewrapper').html(form).trigger('create');
 	
 	$('#listsession').bind('click', function() {
@@ -45,25 +67,6 @@ function gotoCommentUI() {
 			'Failed to get a session ID!'
 	);
 	
-//bind function to submit event for home screen form
-$('form').submit(function () {
-	var postData = $(this).serialize();
-	
-	$.ajax({
-		type: 'POST',
-		data: postData,
-		url: 'http://146.169.25.82/urop/upload_form.php',
-		success: function(data) {
-			console.log(data);
-			console.alert('Your info was successfully added!')
-		},
-		error: function() {
-			console.log(data);
-			alert('There was an error addding your info!');
-		}
-	});
-	return false;
-});
 
 
 
