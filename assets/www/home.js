@@ -55,18 +55,43 @@ function setupHomeUI () {
 		var options = new FileUploadOptions();
 		var params = new Object();
 		var ft = new FileTransfer();
+		alert(id);
 		
 		selectData('SELECT * FROM photo WHERE sessionID='+id,
 			function(tx, results) {
 				params.session = id;
 				
 				for (var i = 0; i < results.rows.length; i++) {
-					var item = result.rows.item(i);
+					var item = results.rows.item(i);
 					params.comment = item.commentID;
 					
 					uploadPhoto(item.file, options, params, ft);
 				}
-			});
+			}, 'error uploading photo');
+		
+		selectData('SELECT * FROM video WHERE sessionID='+id,
+			function(tx, results) {
+				params.session = id;
+				
+				for (var i = 0; i < results.rows.length; i++) {
+					var item = results.rows.item(i);
+					params.comment = item.commentID;
+					
+					uploadVideo(item.file, options, params, ft);
+				}
+			}, 'error uploading video');
+			
+		selectData('SELECT * FROM audio WHERE sessionID='+id,
+			function(tx, results) {
+				params.session = id;
+				
+				for (var i = 0; i < results.rows.length; i++) {
+					var item = results.rows.item(i);
+					params.comment = item.commentID;
+					
+					uploadPhoto(item.file, options, params, ft);
+				}
+			}, 'error uploading audio');
 	});
 }
 

@@ -332,8 +332,10 @@ function addCommentBindings(level) {
 						var ext = files[i].substr(files[i].lastIndexOf('.') +1);
 						if(ext == 'mp4')
 							insertData('video', files_data);
-						else if(ext == 'jpg')
+						else if(ext == 'jpg') {
 							insertData('photo', files_data);
+							alert("Inserted 1 photo with sessionID " + files_data[0] + "and comment id: " + files_data[1]);
+						}
 						else if(ext == '3gp')
 							insertData('audio', files_data); 
 					}

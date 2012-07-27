@@ -311,6 +311,7 @@
 	
 	function uploadAudio(path, options, params, transfer) {
 		options.fileName = path.substr(path.lastIndexOf('/')+1);
+		options.mimeType = "audio";
 		options.params = params;
 	
 		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
