@@ -23,27 +23,7 @@ function setupHomeUI () {
 	form += '<a id="download" data-role="button" >Download</a>';
 	form += '</div>';
 	//bind function to submit event for home screen form
-	
-	console.log($.support.cors);
-	$('form').live('submit', function () {
-		var postData = $(this).serialize();
-			
-		$.ajax({
-			type: 'POST',
-			data: postData,
-			url: 'http://146.169.25.82/urop/upload_form.php',
-			success: function(data) {
-				console.log(data);
-				alert('Your info was successfully added!')
-			},
-			error: function() {
-				console.log(data);
-				alert('There was an error addding your info!');
-		}
-		});
-	});
-
-	
+		
 	$('#homewrapper').html(form).trigger('create');
 	
 	$('#listsession').bind('click', function() {
@@ -56,6 +36,25 @@ function setupHomeUI () {
 		var params = new Object();
 		var ft = new FileTransfer();
 		alert(id);
+		
+		selectData('SELECT * FROM session WHERE sessionID='+id,
+			function(tx, results) {
+				var postData = new Object();
+				postData.session = id;
+				
+				var item = results.rows.item;
+				
+				postData.date = item.date
+				postData.name_r = item.fname;
+				postData.name_e = item.lname;
+				postData.year = item.subject;
+				postData.title = item.module;
+				
+				uploadSessionData(postData);
+				
+				
+			}, "failure!");
+		
 		
 		selectData('SELECT * FROM photo WHERE sessionID='+id,
 			function(tx, results) {
