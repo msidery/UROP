@@ -17,7 +17,11 @@ function setupHomeUI () {
 	form += '<input id="start" name="start" type="submit" data-inline="true" value="Start Session" data-role="button" data-theme="c" >';
 	form += '</form>';
 	form += '<textarea id="sessiontext"></textarea>';
+	form += '<div id="controls" data-role="controlgroup" data-type="horizontal" width="'+width+'" style="clear:both;">';
 	form += '<a id="listsession" data-role="button" >List</a>';
+	form += '<a id="upload" data-role="button" >Upload</a>';
+	form += '<a id="download" data-role="button" >Download</a>';
+	form += '</div>';
 	//bind function to submit event for home screen form
 	
 	console.log($.support.cors);
@@ -44,6 +48,25 @@ function setupHomeUI () {
 	
 	$('#listsession').bind('click', function() {
 		showListCommentsUI(document.getElementById('sessiontext').value);
+	});
+	
+	$('#upload').bind('click', function() {
+		var id = document.getElementById('sessiontext').value;
+		var options = new FileUploadOptions();
+		var params = new Object();
+		var ft = new FileTransfer();
+		
+		selectData('SELECT * FROM photo WHERE sessionID='+id,
+			function(tx, results) {
+				params.session = id;
+				
+				for (var i = 0; i < results.rows.length; i++) {
+					var item = result.rows.item(i);
+					params.comment = item.commentID;
+					
+					uploadPhoto(item.file, options, params, ft);
+				}
+			});
 	});
 }
 

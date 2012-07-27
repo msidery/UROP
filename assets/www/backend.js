@@ -300,26 +300,29 @@
 	 * Customized function for uploading video, audio and photo 
 	 * to the remote server
 	 */
-	function uploadVideo(path, options, transfer) {
+	function uploadVideo(path, options, params, transfer) {
 		options.fileName = path.substr(path.lastIndexOf('/')+1);
 		options.mimeType = "video/mpeg";
 		options.chunkedMode = "false";
+		options.params = params;
 		
-		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
-	function uploadAudio(path, options, transfer) {
+	function uploadAudio(path, options, params, transfer) {
 		options.fileName = path.substr(path.lastIndexOf('/')+1);
+		options.params = params;
 	
-		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
-	function uploadPhoto(path, options, transfer) {
+	function uploadPhoto(path, options, params, transfer) {
 		options.fileName = path.substr(path.lastIndexOf('/')+1);
 		options.mimeType = "jpeg";
 		options.chunckedMode = "false";
+		options.params = params;
 		
-		transfer.upload(path, "http://146.169.24.110/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
 	/*
@@ -335,64 +338,4 @@
 		console.log("An error has occurred: Code = " + error.code);
 		console.log("upload error source " + error.source);
 		console.log("upload error target " + error.target)
-	}
-	
-	function see_recent() {
-		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-		var time = getTimestamp();
-
-		db.transaction(
-			//function sql statements
-			function(tx){
-				tx.executeSql('SELECT * FROM Demo WHERE linked<>1', [], 
-						function(tx, results) {
-							var htmlStr = "";
-							for(var i = 0; i < results.rows.length; i++) {
-								var item = results.rows.item(i);
-								
-								
-								htmlStr = htmlStr + 
-												"<li onclick=\"link_element('"+item.id+"');\" " +
-												'data-filtertext="'+item.tags+'">' + 
-												'<a href="#">';
-								
-								htmlStr = htmlStr + '<p class="ui-li-aside"><strong>'+
-									item.timestamp+'</strong></p><h3>'+
-									item.path+'</h3><p><strong>'+
-									item.id+'</strong></p><p>'+
-									item.tags+'</p></a></li>';
-													
-							}
-							
-							$("#recent_list").html(htmlStr);
-							$("#recent_list").listview('refresh');									
-																					
-						}, errorCB);
-			}, errorCB, successCB);
-	}
-	
-	function link_element(id, tags) {
-		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-		
-		db.transaction(
-			//function sql statements
-			function(tx){
-				//need to set tags here as well
-				tx.executeSql('UPDATE Demo SET linked=1 WHERE id=' + id);
-				console.log("set linked to 1 for" + id);
-				
-			}, errorCB, successCB);
-			
-		//generate new tag
-		if(tags != null) {
-			var newtags = tags + "newtag";
-		} else {
-			var newtags = "newtag ";
-		}
-		
-		db.transaction(
-			function(tx) {
-				tx.executeSql('UPDATE Demo SET tags="' + newtags + '" WHERE id=' + id);
-				console.log("updated tags for" + id);
-			}, errorCB, successCB);
 	}
