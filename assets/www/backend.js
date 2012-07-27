@@ -326,6 +326,22 @@
 		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
 	}
 	
+	function uploadComments(upload_data) {
+		$.ajax({
+			type: 'POST',
+			data: upload_data,
+			url: 'http://146.169.24.146/urop/upload_comments.php',
+			success: function(data) {
+				console.log(data);
+				alert('Your info was successfully added!')
+			},
+			error: function() {
+				console.log(data);
+				alert('There was an error addding your info!');
+			}
+		});
+	}
+	
 	/*
 	 * Success and error callback functions for the file upload
 	 */

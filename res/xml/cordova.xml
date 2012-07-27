@@ -23,7 +23,7 @@
     Domains are assumed blocked unless set otherwise
      -->
 
-    <access origin="http://146.169.25.82"/> <!-- allow local pages -->
+    <access origin="http://146.169.24.146"/> <!-- allow local pages -->
 
     <!-- <access origin="https://example.com" /> allow any secure requests to example.com -->
     <!-- <access origin="https://example.com" subdomains="true" /> such as above, but including subdomains, such as www -->

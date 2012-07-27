@@ -91,7 +91,28 @@ function setupHomeUI () {
 					
 					uploadPhoto(item.file, options, params, ft);
 				}
-			}, 'error uploading audio');
+			}, 'error uploading audio'); 
+		
+		selectData('SELECT * FROM comment WHERE sessionID='+id,
+			
+			function(tx, results) {
+				
+				var postData = new Object();
+				postData.session = id;
+				
+				for(var i = 0; i < results.rows.length; i++) {
+					var item = results.rows.item(i);
+					
+					postData.id = item.commentID;
+					postData.timestamp = item.timestamp;
+					postData.category = item.cat1;
+					postData.type = item.cat2;
+					postData.data = item.comment;
+					
+					uploadComments(postData);					
+				}	
+				
+			}, "error uploading comments");
 	});
 }
 
