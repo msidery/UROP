@@ -1,5 +1,6 @@
 	var files;
 	var captureDevice;
+	var server = "http://146.169.24.86/urop/";
 	
 	function initBackend() {
 	
@@ -306,7 +307,7 @@
 		options.chunkedMode = "false";
 		options.params = params;
 		
-		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, server+"upload.php", uploadSuccess, uploadError, options);
 	}
 	
 	function uploadAudio(path, options, params, transfer) {
@@ -314,7 +315,7 @@
 		options.mimeType = "audio";
 		options.params = params;
 	
-		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, server+"upload.php", uploadSuccess, uploadError, options);
 	}
 	
 	function uploadPhoto(path, options, params, transfer) {
@@ -323,14 +324,14 @@
 		options.chunckedMode = "false";
 		options.params = params;
 		
-		transfer.upload(path, "http://146.169.24.146/urop/upload.php", uploadSuccess, uploadError, options);
+		transfer.upload(path, server+"upload.php", uploadSuccess, uploadError, options);
 	}
 	
 	function uploadSessionData(upload_data) {
 		$.ajax({
 			type: 'POST',
 			data: upload_data,
-			url: 'http://146.169.24.146/urop/upload_form.php',
+			url: server+'upload_form.php',
 			success: function(data) {
 				console.log(data);
 				alert('Your info was successfully added!')
@@ -346,7 +347,7 @@
 		$.ajax({
 			type: 'POST',
 			data: upload_data,
-			url: 'http://146.169.24.146/urop/upload_comments.php',
+			url: server+'upload_comments.php',
 			success: function(data) {
 				console.log(data);
 				alert('Your info was successfully added!')
@@ -355,6 +356,62 @@
 				console.log(data);
 				alert('There was an error addding your info!');
 			}
+		});
+	}
+	
+	function downloadData() {
+		
+		$.ajax({
+			url: server+'download.php',
+			dataType: 'json',
+			success: function(response) {
+				alert("success");
+				
+				
+				var db_data1 = new Array();
+				var db_data2 = new Array();
+				var db_data3 = new Array();
+				var i;
+				
+				for(i = 0; i < response['session'].length; i++) {
+					//setup data for insertion into session table	
+					db_data1[0] = response['session'][i].id;
+					db_data1[1] = response['session'][i].date;
+					db_data1[2] = response['session'][i].name_r;
+					db_data1[3] = response['session'][i].name_e;
+					db_data1[4] = response['session'][i].year;
+					db_data1[5] = response['session'][i].title;
+					//insert one row of data into local database
+					insertData('session', db_data1);
+					alert("inserted "+ i + " " + response['session'][i].id);
+				}
+				
+				for(i = 0; i < response['comments'].length; i++) {
+					//setup data for insertion into comments table	
+					db_data2[0] = response['comments'][i].session_no;
+					db_data2[1] = response['comments'][i].comment_id;
+					db_data2[2] = response['comments'][i].timestamp;
+					db_data2[3] = response['comments'][i].category;
+					db_data2[4] = response['comments'][i].type;
+					db_data2[5] = response['comments'][i].comment;
+					//insert one row of data into local database
+					insertData('comment', db_data2);
+					alert("inserted "+ i + " " + response['comments'][i].comment);
+				}
+				
+				for(i = 0; i < response['files'].length; i++) {
+					//setup data for insertion into session table	
+					db_data3[0] = response['files'][i].session_id;
+					db_data3[1] = response['files'][i].comment_id;
+					db_data3[2] = response['files'][i].path;
+					//insert one row of data into local database
+					//alert(response['files'][i].type);
+					insertData(response['files'][i].type, db_data3);
+					alert("inserted " + i + " " + response['files'][i].path + " into " + response['files'][i].type);
+				}
+				
+			}
+			
 		});
 	}
 	

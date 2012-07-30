@@ -30,6 +30,12 @@ function setupHomeUI () {
 		showListCommentsUI(document.getElementById('sessiontext').value);
 	});
 	
+	$('#download').bind('click', function() {
+	
+		alert("pressed download button");
+		downloadData();		
+	});
+	
 	$('#upload').bind('click', function() {
 		var id = document.getElementById('sessiontext').value;
 		var options = new FileUploadOptions();

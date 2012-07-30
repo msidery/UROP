@@ -62,7 +62,7 @@ function errorCBB(err) {
 
 /* Transaction success callback */
 function successCB() {
-	//alert("success!");
+	alert("success of insertion!");
 }
 
 /* generate the date */
