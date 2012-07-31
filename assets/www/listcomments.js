@@ -21,6 +21,6 @@ function showListCommentsUI(sessionID) {
 			body += '</div>';
 			$('#listwrapper').html(body).trigger('create');
 		},
-		'Failed to retreive comment!'
+		'Failed to retrieve comment!'
 	);
 }

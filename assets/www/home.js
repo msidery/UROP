@@ -33,7 +33,9 @@ function setupHomeUI () {
 	$('#download').bind('click', function() {
 	
 		alert("pressed download button");
-		downloadData();		
+		downloadData(function (){
+			alert("Finished downloading data");
+		});		
 	});
 	
 	$('#upload').bind('click', function() {

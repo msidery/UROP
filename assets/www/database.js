@@ -8,6 +8,9 @@ function initdatabase() {
 			tx.executeSql('DROP TABLE IF EXISTS session');
 			tx.executeSql('DROP TABLE IF EXISTS comment');
 			tx.executeSql('DROP TABLE IF EXISTS tag');
+			tx.executeSql('DROP TABLE IF EXISTS photo');
+			tx.executeSql('DROP TABLE IF EXISTS video');
+			tx.executeSql('DROP TABLE IF EXISTS audio');
 		}
 		dropTables();
 		tx.executeSql('CREATE TABLE IF NOT EXISTS session (sessionID unique, date, fname, lname, subject, module)');
@@ -30,6 +33,22 @@ function initdatabase() {
  * 
  */
 /* Insert data into the given table using all columns */
+function insertMultipleData(table, data) {
+	function insert(tx) {
+		console.log(table +': '+data);
+		for (var i = 0; i < data.length; i++) {
+			tx.executeSql('INSERT INTO ' + table + ' VALUES ('+data[i]+')');
+		}
+		alert('Inserted '+data+' into table: ' + table);
+	}
+	function fail(tx, err) {
+		alert('Failed to insert '+data+' into '+table+'!');
+	}
+	database.transaction(insert, fail, successCB); 
+}
+
+
+
 function insertData(table, data) {
 	function insert(tx) {
 		console.log(table+': '+data);
@@ -62,7 +81,7 @@ function errorCBB(err) {
 
 /* Transaction success callback */
 function successCB() {
-	alert("success of insertion!");
+	//alert("success of insertion!");
 }
 
 /* generate the date */
