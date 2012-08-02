@@ -6,6 +6,7 @@
 	
 		
 		/* Get capture device object used to record, take pictures */
+
 		captureDevice = navigator.device.capture;
 		files = new Array();
 	}
@@ -223,7 +224,20 @@
 		});
 	}
 	
+	function downloadPhysicalFiles(urls, filePaths) {
+		
+		var ft = new FileTransfer();
+		
+		for(var i = 0; i < urls.length; i++) {
+			ft.download(urls[i], filePaths[i], 
+				function () {
+					alert(success in downloading )
+			})
+		}
+	}
+	
 	function downloadData(callback) {
+		
 		
 		$.ajax({
 			url: server+'download.php',
@@ -234,7 +248,7 @@
 				var db_data2 = new Array();
 				var db_data3 = new Array();
 				
-				var i;
+				var i, url, filePath;
 				
 				for(i = 0; i < response['session'].length; i++) {
 					//setup data for insertion into session table	
@@ -248,7 +262,7 @@
 				
 				for(i = 0; i < response['session'].length; i++) {
 					//setup data for insertion into session table	
-					db_data1[i][0] = '"' + response['session'][i].id + '"';
+					db_data1[i][0] = response['session'][i].id;
 					db_data1[i][1] = '"' + getDate() + '"';
 					db_data1[i][2] = '"' + response['session'][i].name_r + '"';
 					db_data1[i][3] = '"' + response['session'][i].name_e + '"';
@@ -271,8 +285,8 @@
 				
 				for(i = 0; i < response['comments'].length; i++) {
 					//setup data for insertion into comments table	
-					db_data2[i][0] = '"' + response['comments'][i].session_no + '"';
-					db_data2[i][1] = '"' + response['comments'][i].comment_id + '"';
+					db_data2[i][0] = response['comments'][i].session_no;
+					db_data2[i][1] = response['comments'][i].comment_id;
 					db_data2[i][2] = '"' + response['comments'][i].timestamp + '"';
 					db_data2[i][3] = '"' + response['comments'][i].category + '"';
 					db_data2[i][4] = '"' + response['comments'][i].type + '"';
@@ -289,10 +303,14 @@
 				}
 				
 				for(i = 0; i < response['files'].length; i++) {
+	
+					url = server + response['files'][i].path;
+					filePath = 'file:///mnt/sdcard/'+i+'.jpg';
+					
 					//setup data for insertion into session table	
-					db_data3[i][0] = '"' + response['files'][i].session_id + '"';
-					db_data3[i][1] = '"' + response['files'][i].comment_id + '"';
-					db_data3[i][2] = '"' + response['files'][i].path + '"';
+					db_data3[i][0] = response['files'][i].session_id;
+					db_data3[i][1] = response['files'][i].comment_id;
+					db_data3[i][2] = filePath;
 				}
 				
 				insertMultipleData('photo', db_data3);
