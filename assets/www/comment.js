@@ -25,7 +25,7 @@ function showCommentUI(data) {
 		insertData('session', dbData);
 	}
 	$('.wrapper').css('display', 'none');
-	$('#commentwrapper').css('display', 'block');
+	$('#commentwrapper').css('display','block');
 	$('#sessiontitle').text('Session: ' + sessionData);
 }
 
@@ -303,7 +303,7 @@ function addCommentBindings(level) {
 				else
 					data[1] = results.rows.item(0).commentID + 1;
 
-				data[2] = '"'+getTimestamp()+'"';
+				    data[2] = '"'+ getDate() +'"';
 				
 				var btn1 = $('#control .ui-btn-down-b').attr('id').substring(3);
 				var btn2 = $('#control'+btn1+' .ui-btn-down-b').attr('id').split('-')[1];
@@ -370,7 +370,7 @@ function initDisplay() {
 	// hide all tab groups
 	$('.sub').css('display', 'none');
 	// show the first sub group of each tab group
-	$('.initsub').css('display', 'block');
+	$('.initsub').css('display', 'block');	
 	// highlight the first button of the top and second level tab groups
 	$('.initbtn').addClass('ui-btn-down-b');
 }
@@ -378,8 +378,9 @@ function initDisplay() {
 // remove highlights from all third level buttons and reset the text box
 function resetEntries() {
 	$('.sub .sub .sub .ui-btn-down-b').removeClass('ui-btn-down-b');
-	$('#text').text('');
+	$('#text').val('');
 	$('#links').html('');
+	files.length = 0;
 }
 
 // setup the UI sizes and spacing

@@ -47,8 +47,6 @@ function insertMultipleData(table, data) {
 	database.transaction(insert, fail, successCB); 
 }
 
-
-
 function insertData(table, data) {
 	function insert(tx) {
 		console.log(table+': '+data);

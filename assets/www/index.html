@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PhoneGapTest</title>
 <script type="text/javascript" charset="utf-8" src="cordova-1.9.0.js"></script>
 <script type="text/javascript" charset="utf-8" src="backend.js"></script>
@@ -9,9 +10,13 @@
 <script type="text/javascript" charset="utf-8" src="comment.js"></script>
 <script type="text/javascript" charset="utf-8" src="view.js"></script>
 <script type="text/javascript" charset="utf-8" src="listcomments.js"></script>
+<script type="text/javascript" charset="utf-8" src="listsessions.js"></script>
+<script type="text/javascript" charset="utf-8" src="newsession.js"></script>
 <link rel="stylesheet" href="jquery.mobile-1.1.0.min.css" />
+<link rel="stylesheet" href="layout.css" />
+<link rel="stylesheet" href="reset.css" />
 <script src="jquery-1.7.2.min.js"></script>
-<script src="jquery.mobile-1.1.0.min.js"></script>
+<script src="jquery.mobile-1.1.0.js"></script>
 <script type="text/javascript" charset="utf-8">
 
 	/** Add device ready event that will be triggered when library is loaded */
@@ -50,18 +55,44 @@
 		initCommentUI();
 		initViewUI();
 		initListCommentsUI();
+		initListViewUI();
+		initNewSessionUI();
 		showHomeUI();
+		
 		//showListCommentsUI(0);
 		$('.wrapper').css('width', width+'px');
 		$('.wrapper').css('height', height+'px');
-    }
+		
+	}
+	
+	$(document).bind("pagebeforechange", function (e, data) {
+		
+		if(typeof data.toPage === 'string') {
+			var u = $.mobile.path.parseUrl(data.toPage);
+			console.log('i am printing this now! = ' + u.hash);
+		
+			if(u.hash == '#newsessionwrapper') {
+				alert('Hello!');
+				//initNewSessionUI();
+				showNewSessionUI();
+				//changePage('#newsessionwrapper');
+				e.preventDefault();
+			}	
+		}
+	});
+		
 </script>
 
 </head>
 <body style="margin:0px;padding:0px;background:#FFFFFF;">
-	<div id="homewrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
-	<div id="commentwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
-	<div id="viewwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
-	<div id="listwrapper" class="wrapper" ></div>
+			
+	<div data-role="page" id="homewrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div data-role="page" id="commentwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div data-role="page"  id="viewwrapper" class="wrapper" ontouchmove="touchmove(event)" ></div>
+	<div data-role="page"  id="newsessionwrapper" class="wrapper" ></div>
+	<div data-role="page"  id="listwrapper" class="wrapper" ></div>
+	<div data-role="page"  id="listcommentwrapper" class="wrapper" ></div>
+	<div data-role="page"  id="listsessionwrapper" class="wrapper" ></div>
+
 </body>
 </html>

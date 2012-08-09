@@ -1,12 +1,25 @@
 	var files;
 	var captureDevice;
-	var server = "http://146.169.25.79/urop/";
+	var server = "http://146.169.24.96/urop/";
+    var fs;
+    var dreader;
 	
-	function initBackend() {
+    function initBackend() {
 	
 		
 		/* Get capture device object used to record, take pictures */
-
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
+                                 //success callback
+                                 function (filesystem){
+                                    console.log(filesystem.root.fullPath);
+                                    fs = filesystem;
+                                    dreader = fs.root.createReader();
+                                 },
+                                 //fail callback
+                                 function (error) {
+                                    console.log('Error in getting file system!');
+                                 });
+        
 		captureDevice = navigator.device.capture;
 		files = new Array();
 	}
@@ -92,6 +105,8 @@
    		
    		for(i = 0, len = mediaFiles.length; i < len; i += 1) {
     		path = mediaFiles[i].fullPath;
+            alert(path);
+            //alert(window.rootFS.fullPath);
     		var id = mediaFiles[i].name.split('.');
     		id[0] = "a" + id[0];
     		console.log("id : " + id[0]);
@@ -123,44 +138,94 @@
   		+ 'message: ' + error.message + '\n');
 	}
 
-	/* 
-	 * Used to upload files to the remote server. 
-	 * Selects all elements in the database and uploads them onto the server
-	 * Needs to be modified to only upload those that have to be uploaded
-	 */	
-	function uploadFiles() {
+	
+	function upload(id) {
+	
+		var upload_form_data = new Object();
+		var upload_comments_data = new Object();
 		
-		//open database
-		var db = window.openDatabase("test", "1.0", "Test DB", 1000000);
-		//go through it and upload each file
 		var options = new FileUploadOptions();
+		var params = new Object();
 		var ft = new FileTransfer();
+		alert(id);
 		
-		db.transaction(
-			//function sql statements
-			function(tx){
-				tx.executeSql('SELECT * FROM Demo WHERE uploaded=0', [], 
-						function(tx, results) {
-							for(var i = 0; i < results.rows.length; i++) {
-								
-								var item = results.rows.item(i);
-								
-								if(item.type == "video") {
-									uploadVideo(item.path, options, ft);
-								}
-								else if(item.type == "audio" ) {
-									uploadAudio(item.path, options, ft);
-								}
-								else if(item.type == "photo" ) {
-									uploadPhoto(item.path, options, ft);
-								}
-								else {
-									console.log("nothing to upload");
-								}
-							}
-						}, errorCB);
-			}, errorCB, successCB);
+		selectData('SELECT * FROM session WHERE sessionID='+id,
+				   function (tx, results) {
+					
+				   for(var i = 0; i < results.rows.length; i++) {
+						var item = results.rows.item(i);
+				   
+						upload_form_data.name_r = item.fname;
+						console.log('Check if upload_form_data is undefined for some reason '+upload_form_data.name_r);
+						upload_form_data.name_e = item.lname;
+						upload_form_data.year = item.subject;
+						upload_form_data.title = item.module;
+						upload_form_data.date = item.date;
+				   
+						uploadSessionData(upload_form_data);
+				   }
+				   },
+				   'Failure to upload session data');
+		
+		selectData('SELECT * FROM comment WHERE sessionID='+id,
+				   function (tx, results) {
+						
+					   upload_comments_data.session = id;
+					   
+					   for(var i = 0; i < results.rows.length; i++) {
+						   var item = results.rows.item(i);
+						   
+						   upload_comments_data.id = item.commentID;
+						   upload_comments_data.timestamp = item.timestamp;
+						   upload_comments_data.category = item.cat1;
+						   upload_comments_data.type = item.cat2;
+						   upload_comments_data.data = item.comment;
+						   
+						   uploadComments(upload_comments_data);
+					   }
+				   },
+				   'Failure to upload comments for session id '+id);
+		
+		selectData('SELECT * FROM photo WHERE sessionID='+id,
+				   function (tx, results) {
+					   params.session = id;
+					   
+					   for(var i = 0; i < results.rows.length; i++) {
+						   var item = results.rows.item(i);
+						   params.comments = item.commentID;
+						   
+						   uploadPhoto(item.file, options, params, ft);
+					   }
+				   },
+				   'Failure to upload photos');
+		
+		selectData('SELECT * FROM audio WHERE sessionID='+id,
+				   function (tx, results) {
+					   params.session = id;
+					   
+					   for (var i = 0; i < results.rows.length; i++) {
+						   var item = results.rows.item(i);
+						   params.comment = item.commentID;
+						   
+						   uploadAudio(item.file, options, params, ft);
+					   }
+				   },
+				   'Failure to upload audio');
+		
+		selectData('SELECT * FROM video WHERE sessionID='+id,
+				   function (tx, results) {
+					   params.session = id;
+				   
+					   for(var i = 0; i < results.rows.length; i++) {
+						   var item = results.rows.item(i);
+						   params.comment = item.commentID;
+						   
+						   uploadVideo(item.file, options, params, ft);
+					   }
+				   },
+				   'Failure to upload video');
 	}
+
 	
 	/*
 	 * Customized function for uploading video, audio and photo 
@@ -188,7 +253,7 @@
 		options.mimeType = "jpeg";
 		options.chunckedMode = "false";
 		options.params = params;
-		
+		alert('i get here');
 		transfer.upload(path, server+"upload.php", uploadSuccess, uploadError, options);
 	}
 	
@@ -214,8 +279,8 @@
 			data: upload_data,
 			url: server+'upload_comments.php',
 			success: function(data) {
-				console.log(data);
-				alert('Your info was successfully added!')
+				//console.log(data);
+				//alert('Your info was successfully added!')
 			},
 			error: function() {
 				console.log(data);
@@ -231,24 +296,66 @@
 		for(var i = 0; i < urls.length; i++) {
 			ft.download(urls[i], filePaths[i], 
 				function () {
-					alert(success in downloading )
+					//alert('success in downloading')
 			})
 		}
 	}
 	
-	function downloadData(callback) {
+	function downloadSessionData() {
+		$.ajax({
+		   url: server+'download_session.php',
+		   dataType: 'json',
+		   success: function(response) {
+			   alert("success");
+			   var item;
+			   var date;
+			   //var prevdate;
+			   
+			   for(var i = 0; i < response.length; i++) {
+			   
+			   item = response[i];
+			   console.log(item.id);
+			   date = item.date;
+			   
+			   //var list = '<li data-role="list-divider">'+date+'<span class="ui-li-count">2</span></li>';
+			   var list = '<li><a href="#" onclick="downloadData('+item.id+');">';
+			   list += '<h3>'+item.name_r+' '+item.name_e+'</h3>';
+			   list += '<p><strong>'+item.title+'</strong></p>';
+			   list += '<p class="ui-li-aside"><strong>'+item.id+'</strong></p>';
+			   list += '</a></li>';
+			   
+			   $('ul').append(list);
+			   $('ul').listview('refresh');
+			   
+			   }
+		   }
+		});
+	}
+
+
+
+	function downloadData(id) {
 		
+		var postData = new Object();
+		postData.id = id;
+		alert(postData.id);
 		
 		$.ajax({
 			url: server+'download.php',
 			dataType: 'json',
+			error: function(xhr, error) {
+			   alert(xhr.status);
+			},
 			success: function(response) {
 				
+			    alert("success");
 				var db_data1 = new Array();
 				var db_data2 = new Array();
 				var db_data3 = new Array();
 				
-				var i, url, filePath;
+				var i;
+                var urls = new Array();
+                var filePaths = new Array();
 				
 				for(i = 0; i < response['session'].length; i++) {
 					//setup data for insertion into session table	
@@ -271,7 +378,7 @@
 					//alert("set all the values for session");
 				}
 				
-				insertMultipleData('session', db_data1);
+				
 
 				for(i = 0; i < response['comments'].length; i++) {
 					//setup data for insertion into session table	
@@ -293,7 +400,7 @@
 					db_data2[i][5] = '"' + response['comments'][i].comment + '"';
 				}
 				
-				insertMultipleData('comment', db_data2);
+				
 				
 				for(i = 0; i < response['files'].length; i++) {
 					//setup data for insertion into session table	
@@ -304,20 +411,23 @@
 				
 				for(i = 0; i < response['files'].length; i++) {
 	
-					url = server + response['files'][i].path;
-					filePath = 'file:///mnt/sdcard/'+i+'.jpg';
+					urls[i] = server + response['files'][i].path;
+					filePaths[i] = fs.root.fullPath+'/'+i+'.jpg';
 					
 					//setup data for insertion into session table	
 					db_data3[i][0] = response['files'][i].session_id;
 					db_data3[i][1] = response['files'][i].comment_id;
-					db_data3[i][2] = filePath;
+					db_data3[i][2] = '"' + filePaths[i] + '"';
 				}
 				
+                insertMultipleData('session', db_data1);
+                insertMultipleData('comment', db_data2);
 				insertMultipleData('photo', db_data3);
+                downloadPhysicalFiles(urls, filePaths);
 				
 			}
 		});
-		callback();
+		//callback();
 	}
 	
 	/*

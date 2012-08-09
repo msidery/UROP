@@ -1,0 +1,117 @@
+/*
+ * CSS maker thingy for browser compatibility
+ * http://prefixr.com/index.php
+ */
+
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+a:hover {
+	cursor: pointer;
+}
+
+#body {
+	width: 800px;
+	margin: 50px auto;
+	background: white;
+	padding: 20px;
+	border: 1px solid #333333;
+}
+
+#body .commentdiv {
+}
+
+#body .commenttype {
+	float: left;
+	width: 40px;
+	height: 5px;
+	border-radius: 2px;
+	margin: 5px;
+}
+
+#body .commentbody:hover a {
+/*	background: green;*/
+}
+
+#body .commenttext {
+	float: left;
+	width: 650px;
+}
+
+.positive {
+	background: green;
+}
+
+.negative {
+	background: red;
+}
+
+.neutral {
+	background: blue;
+}
+
+#body .newcomment {
+	background: orange;
+	margin-left: 20px;
+	width: 10px;
+	height: 10px;
+	border-radius: 2px;
+}
+
+#body .newcomment:hover .newtag {
+	display: block;
+}
+
+#body .newtag {
+	display: none;
+	width: 120px;
+	background-color: yellow;
+	padding: 1px auto;
+	border-radius: 5px;
+	margin-left: -50px;
+}
+
+#body #dialog {
+	background: white;
+	width: 800px;
+	height: 400px;
+	position: fixed;
+	top: 100px;
+	left: auto;
+	right: auto;
+	border: 1px solid #999999;
+	border-radius: 5px;
+	display: none;
+}
+
+#body #frame {
+	width: 800px;
+	height: 400px;
+}
+
+#pics {
+	padding: 10px;
+}
+
+.picdiv {
+	width: 200px;
+	height: 200px;
+	position:relative;
+	float:left;
+}
+
+.viewpic {
+	width: 180px;
+	height: 180px;
+	border-radius: 10px;
+}
+
+.deletepic {
+	background: red;
+	position: absolute;
+	float: right;
+	margin: 0px auto auto 150px; 
+}
